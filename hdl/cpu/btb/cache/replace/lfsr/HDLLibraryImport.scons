@@ -1,0 +1,65 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_btb_cache_replace_lfsr_config_pkg_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'library ieee;',
+    'use ieee.std_logic_1164.all;',
+    '',
+    'package cpu_btb_cache_replace_lfsr_config_pkg is',
+    ''
+    '  constant cpu_btb_cache_replace_lfsr_reg_bits : natural := @cpu_btb_cache_replace_lfsr_reg_bits@;',
+    ''
+    'end package;',
+    '',
+    ]
+cpu_btb_cache_replace_lfsr_config_pkg_subst_dict = dict()
+cpu_btb_cache_replace_lfsr_config_pkg_subst_dict['@cpu_btb_cache_replace_lfsr_reg_bits@'] = \
+    kconfig['proj.%s.hdl.lib.%s.btb.cache.replace.lfsr.reg_bits' % (project, hdllibrary)]
+cpu_btb_cache_replace_lfsr_config_pkg = \
+    textfile_env.Textfile(target     = 'cpu_btb_cache_replace_lfsr_config_pkg.vhdl',
+                          source     = cpu_btb_cache_replace_lfsr_config_pkg_source,
+                          SUBST_DICT = cpu_btb_cache_replace_lfsr_config_pkg_subst_dict
+                          )
+
+hdllibenv.HDLAnalyze(source = cpu_btb_cache_replace_lfsr_config_pkg,
+                     provides = [VHDLPackage('cpu_btb_cache_replace_lfsr_config_pkg'),
+                                 ],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_btb_cache_replace_lfsr_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_btb_cache_replace_lfsr_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_cache_config_pkg'),
+                                 VHDLPackage('cpu_btb_cache_replace_lfsr_config_pkg'),
+                                 VHDLPackage('util.types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_btb_cache_replace_lfsr.vhdl'],
+                     provides = [VHDLEntity('cpu_btb_cache_replace_lfsr'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_cache_replace_lfsr_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_btb_cache_replace_lfsr-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_btb_cache_replace_lfsr(rtl)'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_cache_config_pkg'),
+                                 VHDLArchitecture('tech.lfsr(rtl)'),
+                                 VHDLArchitecture('tech.decoder(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )

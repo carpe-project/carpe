@@ -1,0 +1,31 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+
+tech_impls = [
+    ('inferred', 'Inferred Components', 'Inferred Component'),
+    ]
+
+tech_value_list = kconfig.ValueList('proj.%s.hdl.lib.tech.impl' % project,
+                                prompt = '"Technology Library Selection"',
+                                )
+
+for impl_symbol, impl_prompt, impl_menu_title in tech_impls:
+    tech_value_list.Value('proj.%s.hdl.lib.tech.impl.%s' % (project, impl_symbol),
+                          prompt = '"%s"' % impl_prompt,
+                          value = impl_symbol,
+                          )
+    if impl_menu_title is not None:
+        impl_config_menu = kconfig.Menu('%s Configuration' % impl_menu_title,
+                                        depends_on = 'proj.%s.hdl.lib.tech.impl.%s' % (project, impl_symbol),
+                                        )
+        SConscript('%s/HDLLibraryKconfig.scons' % impl_symbol,
+                   exports = {'env'        : env,
+                              'kconfig'    : impl_config_menu,
+                              'project'    : project,
+                              },
+                   variantdir = impl_symbol,
+                   duplicate = 0,
+                   )

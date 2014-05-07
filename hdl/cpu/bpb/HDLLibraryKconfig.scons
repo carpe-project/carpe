@@ -1,0 +1,34 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+cpu_bpb_impls = [
+    ('nt',    'Not-taken', None),
+    ('bimod', 'Bimodal',   'Bimodal BPB'),
+    ]
+
+bpb_impl_value_list = kconfig.ValueList('proj.%s.hdl.lib.%s.bpb.impl' % (project, hdllibrary),
+                                        prompt = '"Branch Prediction Buffer Type"',
+                                        )
+
+for impl_symbol, impl_prompt, impl_menu_title in cpu_bpb_impls:
+    bpb_impl_value_list.Value('proj.%s.hdl.lib.%s.bpb.impl.%s' % (project, hdllibrary, impl_symbol),
+                              prompt = '"%s"' % impl_prompt,
+                              value = impl_symbol,
+                              )
+    if impl_menu_title is not None:
+        impl_config_menu = kconfig.Menu('%s Configuration' % impl_menu_title,
+                                        depends_on = 'proj.%s.hdl.lib.%s.bpb.impl.%s' % (project, hdllibrary, impl_symbol),
+                                        )
+        SConscript('%s/HDLLibraryKconfig.scons' % impl_symbol,
+                   exports = {'env'        : env,
+                              'kconfig'    : impl_config_menu,
+                              'project'    : project,
+                              'hdllibrary' : hdllibrary,
+                              },
+                   variantdir = impl_symbol,
+                   duplicate = 0,
+                   )

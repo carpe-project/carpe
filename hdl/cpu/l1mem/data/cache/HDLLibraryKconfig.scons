@@ -1,0 +1,69 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+index_bits_values = xrange(21)
+index_bits_valuelist = \
+    kconfig.ValueList('proj.%s.hdl.lib.%s.l1mem.data.cache.index_bits' % (project, hdllibrary),
+                      prompt = '"Number of Sets"',
+                      type = 'int',
+                      )
+for index_bits in index_bits_values:
+    num_sets = 2**index_bits
+    index_bits_valuelist.Value('proj.%s.hdl.lib.%s.l1mem.data.cache.index_bits.%d' % (project, hdllibrary, index_bits),
+                               prompt = '"%d Sets"' % num_sets if num_sets != 1 else '"1 Set"',
+                               value = index_bits,
+                               )
+
+offset_bits_values = xrange(0, 9)
+offset_bits_valuelist = \
+    kconfig.ValueList('proj.%s.hdl.lib.%s.l1mem.data.cache.offset_bits' % (project, hdllibrary),
+                      prompt = '"Block Size"',
+                      type = 'int',
+                      )
+for offset_bits in offset_bits_values:
+    block_size = 2**offset_bits
+    offset_bits_valuelist.Value('proj.%s.hdl.lib.%s.l1mem.data.cache.offset_bits.%d' % (project, hdllibrary, offset_bits),
+                                prompt = '"%d Bytes"' % block_size if block_size != 1 else '"1 Byte"',
+                                value = offset_bits,
+                                )
+
+log2_assoc_values = xrange(6)
+log2_assoc_valuelist = kconfig.ValueList('proj.%s.hdl.lib.%s.l1mem.data.cache.log2_assoc' % (project, hdllibrary),
+                                         prompt = '"Associativity"',
+                                         type = 'int',
+                                         )
+for log2_assoc in log2_assoc_values:
+    assoc = 2**log2_assoc
+    log2_assoc_valuelist.Value('proj.%s.hdl.lib.%s.l1mem.data.cache.log2_assoc.%d' % (project, hdllibrary, log2_assoc),
+                               prompt = '"%d-Way"' % assoc if assoc != 1 else '"Direct Mapped"',
+                               value = log2_assoc,
+                               )
+
+replace_menu = kconfig.Menu('Replacement Algorithm Options',
+                            #visible_if = '!proj.%s.hdl.lib.%s.l1mem.data.cache.log2_assoc.0' % (project, hdllibrary),
+                            )
+SConscript('#hdl/cpu/l1mem/data/cache/replace/HDLLibraryKconfig.scons',
+           exports = {'env'       : env,
+                      'kconfig'   : replace_menu,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variantdir = 'replace',
+           duplicate = 0,
+           )
+
+stb_entries_values = xrange(1, 17)
+stb_entries_valuelist = \
+    kconfig.ValueList('proj.%s.hdl.lib.%s.l1mem.data.cache.stb_entries' % (project, hdllibrary),
+                      prompt = '"Number of Store Buffer Entries"',
+                      type = 'int',
+                      )
+for stb_entries in stb_entries_values:
+    stb_entries_valuelist.Value('proj.%s.hdl.lib.%s.l1mem.data.cache.stb_entries.%d' % (project, hdllibrary, stb_entries),
+                               prompt = '"%d Entries"' % stb_entries if stb_entries != 1 else '"1 Entry"',
+                               value = stb_entries,
+                               )

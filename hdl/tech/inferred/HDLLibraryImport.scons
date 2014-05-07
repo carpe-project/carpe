@@ -1,0 +1,453 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('project')
+Import('kconfig')
+Import('hdllibenv')
+
+hdllibenv.HDLAnalyze(source = ['syncram_1rw-rtl.vhdl'],
+                     provides = [VHDLArchitecture('syncram_1rw(rtl)')],
+                     requires = [VHDLArchitecture('syncram_1rw_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_1rw_inferred.vhdl'],
+                     provides = [VHDLEntity('syncram_1rw_inferred')],
+                     requires = [VHDLPackage('util.logic_pkg')],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_1rw_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('syncram_1rw_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     sim      = not kconfig['proj.%s.hdl.lib.tech.inferred.sim_only_models' % project],
+                     syn      = True,
+                     )
+if kconfig['proj.%s.hdl.lib.tech.inferred.sim_only_models' % project]:
+    hdllibenv.HDLAnalyze(source = ['syncram_1rw_inferred-rtl-sim.vhdl'],
+                         provides = [VHDLArchitecture('syncram_1rw_inferred(rtl)')],
+                         requires = [VHDLPackage('util.names_pkg'),
+                                     VHDLPackage('util.numeric_pkg'),
+                                     VHDLPackage('util.logic_pkg')
+                                     ],
+                         standard = 'vhdl00',
+                         sim      = True,
+                         syn      = False,
+                         )
+
+hdllibenv.HDLAnalyze(source = ['syncram_1r1w-rtl.vhdl'],
+                     provides = [VHDLArchitecture('syncram_1r1w(rtl)')],
+                     requires = [VHDLArchitecture('tech.syncram_1r1w_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_1r1w_inferred.vhdl'],
+                     provides = [VHDLEntity('syncram_1r1w_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_1r1w_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('syncram_1r1w_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     sim      = not kconfig['proj.%s.hdl.lib.tech.inferred.sim_only_models' % project],
+                     syn      = True,
+                     )
+if kconfig['proj.%s.hdl.lib.tech.inferred.sim_only_models' % project]:
+    hdllibenv.HDLAnalyze(source = ['syncram_1r1w_inferred-rtl-sim.vhdl'],
+                         provides = [VHDLArchitecture('syncram_1r1w_inferred(rtl)')],
+                         requires = [VHDLPackage('util.names_pkg'),
+                                     VHDLPackage('util.numeric_pkg'),
+                                     VHDLPackage('util.logic_pkg')
+                                     ],
+                         standard = 'vhdl00',
+                         sim      = True,
+                         syn      = False,
+                         )
+
+hdllibenv.HDLAnalyze(source = ['syncram_2r1w-rtl.vhdl'],
+                     provides = [VHDLArchitecture('syncram_2r1w(rtl)')],
+                     requires = [VHDLArchitecture('tech.syncram_2r1w_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_2r1w_inferred.vhdl'],
+                     provides = [VHDLEntity('syncram_2r1w_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_2r1w_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('syncram_2r1w_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     sim      = not kconfig['proj.%s.hdl.lib.tech.inferred.sim_only_models' % project],
+                     syn      = True,
+                     )
+if kconfig['proj.%s.hdl.lib.tech.inferred.sim_only_models' % project]:
+    hdllibenv.HDLAnalyze(source = ['syncram_2r1w_inferred-rtl-sim.vhdl'],
+                         provides = [VHDLArchitecture('syncram_2r1w_inferred(rtl)')],
+                         requires = [VHDLPackage('util.names_pkg'),
+                                     VHDLPackage('util.numeric_pkg'),
+                                     VHDLPackage('util.logic_pkg'),
+                                     ],
+                         standard = 'vhdl00',
+                         sim      = True,
+                         syn      = False,
+                         )
+
+hdllibenv.HDLAnalyze(source = ['syncram_banked_1rw-rtl.vhdl'],
+                     provides = [VHDLArchitecture('syncram_banked_1rw(rtl)')],
+                     requires = [VHDLArchitecture('syncram_banked_1rw_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_banked_1rw_inferred.vhdl'],
+                     provides = [VHDLEntity('syncram_banked_1rw_inferred')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_banked_1rw_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('syncram_banked_1rw_inferred(rtl)')],
+                     requires = [VHDLArchitecture('syncram_1rw(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['syncram_banked_1r1w-rtl.vhdl'],
+                     provides = [VHDLArchitecture('syncram_banked_1r1w(rtl)')],
+                     requires = [VHDLArchitecture('syncram_banked_1r1w_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_banked_1r1w_inferred.vhdl'],
+                     provides = [VHDLEntity('syncram_banked_1r1w_inferred')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_banked_1r1w_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('syncram_banked_1r1w_inferred(rtl)')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLArchitecture('syncram_1r1w(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['add-rtl.vhdl'],
+                     provides = [VHDLArchitecture('add(rtl)')],
+                     requires = [VHDLArchitecture('add_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['add_inferred.vhdl'],
+                     provides = [VHDLEntity('add_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['add_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('add_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['addsub-rtl.vhdl'],
+                     provides = [VHDLArchitecture('addsub(rtl)')],
+                     requires = [VHDLArchitecture('addsub_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['addsub_inferred.vhdl'],
+                     provides = [VHDLEntity('addsub_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['addsub_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('addsub_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['mul-rtl.vhdl'],
+                     provides = [VHDLArchitecture('mul(rtl)')],
+                     requires = [VHDLArchitecture('mul_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul_inferred.vhdl'],
+                     provides = [VHDLEntity('mul_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('mul_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['mul_pipe-rtl.vhdl'],
+                     provides = [VHDLArchitecture('mul_pipe(rtl)')],
+                     requires = [VHDLArchitecture('mul_pipe_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul_pipe_inferred.vhdl'],
+                     provides = [VHDLEntity('mul_pipe_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul_pipe_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('mul_pipe_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['mul_seq-rtl.vhdl'],
+                     provides = [VHDLArchitecture('mul_seq(rtl)')],
+                     requires = [VHDLArchitecture('mul_seq_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul_seq_inferred.vhdl'],
+                     provides = [VHDLEntity('mul_seq_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul_seq_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('mul_seq_inferred(rtl)')],
+                     requires = [VHDLPackage('util.logic_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['mul_trunc_seq-rtl.vhdl'],
+                     provides = [VHDLArchitecture('mul_trunc_seq(rtl)')],
+                     requires = [VHDLArchitecture('mul_trunc_seq_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul_trunc_seq_inferred.vhdl'],
+                     provides = [VHDLEntity('mul_trunc_seq_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul_trunc_seq_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('mul_trunc_seq_inferred(rtl)')],
+                     requires = [VHDLPackage('util.logic_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['div-rtl.vhdl'],
+                     provides = [VHDLArchitecture('div(rtl)')],
+                     requires = [VHDLArchitecture('div_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['div_inferred.vhdl'],
+                     provides = [VHDLEntity('div_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['div_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('div_inferred(rtl)')],
+                     requires = [VHDLPackage('util.logic_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['div_pipe-rtl.vhdl'],
+                     provides = [VHDLArchitecture('div_pipe(rtl)')],
+                     requires = [VHDLArchitecture('div_pipe_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['div_pipe_inferred.vhdl'],
+                     provides = [VHDLEntity('div_pipe_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['div_pipe_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('div_pipe_inferred(rtl)')],
+                     requires = [VHDLPackage('util.logic_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['div_seq-rtl.vhdl'],
+                     provides = [VHDLArchitecture('div_seq(rtl)')],
+                     requires = [VHDLArchitecture('div_seq_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['div_seq_inferred.vhdl'],
+                     provides = [VHDLEntity('div_seq_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['div_seq_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('div_seq_inferred(rtl)')],
+                     requires = [VHDLPackage('util.logic_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['madd-rtl.vhdl'],
+                     provides = [VHDLArchitecture('madd(rtl)')],
+                     requires = [VHDLArchitecture('madd_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['madd_inferred.vhdl'],
+                     provides = [VHDLEntity('madd_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['madd_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('madd_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['madd_pipe-rtl.vhdl'],
+                     provides = [VHDLArchitecture('madd_pipe(rtl)')],
+                     requires = [VHDLArchitecture('madd_pipe_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['madd_pipe_inferred.vhdl'],
+                     provides = [VHDLEntity('madd_pipe_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['madd_pipe_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('madd_pipe_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['madd_seq-rtl.vhdl'],
+                     provides = [VHDLArchitecture('madd_seq(rtl)')],
+                     requires = [VHDLArchitecture('madd_seq_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['madd_seq_inferred.vhdl'],
+                     provides = [VHDLEntity('madd_seq_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['madd_seq_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('madd_seq_inferred(rtl)')],
+                     requires = [VHDLPackage('util.logic_pkg')],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['shifter-rtl.vhdl'],
+                     provides = [VHDLArchitecture('shifter(rtl)')],
+                     requires = [VHDLArchitecture('shifter_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['shifter_inferred.vhdl'],
+                     provides = [VHDLEntity('shifter_inferred')],
+                     requires = [VHDLPackage('util.numeric_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['shifter_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('shifter_inferred(rtl)')],
+                     requires = [VHDLPackage('util.numeric_pkg'),
+                                 VHDLPackage('util.logic_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['mux_1hot-rtl.vhdl'],
+                     provides = [VHDLArchitecture('mux_1hot(rtl)')],
+                     requires = [VHDLArchitecture('mux_1hot_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mux_1hot_inferred.vhdl'],
+                     provides = [VHDLEntity('mux_1hot_inferred')],
+                     requires = [VHDLPackage('util.types_pkg')],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mux_1hot_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('mux_1hot_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['encoder-rtl.vhdl'],
+                     provides = [VHDLArchitecture('encoder(rtl)')],
+                     requires = [VHDLArchitecture('encoder_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['encoder_inferred.vhdl'],
+                     provides = [VHDLEntity('encoder_inferred')],
+                     requires = [VHDLPackage('util.numeric_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['encoder_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('encoder_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['decoder-rtl.vhdl'],
+                     provides = [VHDLArchitecture('decoder(rtl)')],
+                     requires = [VHDLArchitecture('decoder_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['decoder_inferred.vhdl'],
+                     provides = [VHDLEntity('decoder_inferred')],
+                     requires = [VHDLPackage('util.numeric_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['decoder_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('decoder_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['prioritizer-rtl.vhdl'],
+                     provides = [VHDLArchitecture('prioritizer(rtl)')],
+                     requires = [VHDLArchitecture('prioritizer_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['prioritizer_inferred.vhdl'],
+                     provides = [VHDLEntity('prioritizer_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['prioritizer_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('prioritizer_inferred(rtl)')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['lfsr-rtl.vhdl'],
+                     provides = [VHDLArchitecture('lfsr(rtl)')],
+                     requires = [VHDLArchitecture('lfsr_inferred(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['lfsr_inferred.vhdl'],
+                     provides = [VHDLEntity('lfsr_inferred')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['lfsr_inferred-rtl.vhdl'],
+                     provides = [VHDLArchitecture('lfsr_inferred(rtl)')],
+                     requires = [VHDLPackage('util.logic_pkg')],
+                     standard = 'vhdl00',
+                     )
+

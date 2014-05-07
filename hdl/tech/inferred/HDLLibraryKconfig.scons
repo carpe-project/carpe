@@ -1,0 +1,10 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+
+kconfig.Config('proj.%s.hdl.lib.tech.inferred.sim_only_models' % project,
+               prompt = '"Enable simulation-only models"',
+               default = 'y',
+               )

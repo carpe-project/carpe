@@ -1,0 +1,123 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+cpu_or1knd_i5_mmu_data_impl = kconfig['proj.%s.hdl.lib.%s.mmu.data.impl' % (project, hdllibrary)]
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_or1knd_i5_mmu_data_pkg_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'use work.cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_pkg.all;',
+    '',
+    'package cpu_or1knd_i5_mmu_data_pkg is',
+    ''
+    '  subtype cpu_or1knd_i5_mmu_data_ctrl_in_type  is cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_ctrl_in_type;',
+    '  subtype cpu_or1knd_i5_mmu_data_dp_in_type    is cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_dp_in_type;',
+    '  subtype cpu_or1knd_i5_mmu_data_ctrl_out_type is cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_ctrl_out_type;',
+    '  subtype cpu_or1knd_i5_mmu_data_dp_out_type   is cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_dp_out_type;',
+    '',
+    '  subtype cpu_or1knd_i5_mmu_data_ctrl_in_pipe_type  is cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_ctrl_in_pipe_type;',
+    '  subtype cpu_or1knd_i5_mmu_data_ctrl_out_pipe_type is cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_ctrl_out_pipe_type;',
+    '  subtype cpu_or1knd_i5_mmu_data_dp_in_pipe_type    is cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_dp_in_pipe_type;',
+    '  subtype cpu_or1knd_i5_mmu_data_dp_out_pipe_type   is cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_dp_out_pipe_type;',
+    ''
+    'end package;',
+    '',
+    ]
+cpu_or1knd_i5_mmu_data_pkg_subst_dict = dict()
+cpu_or1knd_i5_mmu_data_pkg_subst_dict['@cpu_or1knd_i5_mmu_data_impl@'] = cpu_or1knd_i5_mmu_data_impl
+cpu_or1knd_i5_mmu_data_pkg = \
+    textfile_env.Textfile(target     = 'cpu_or1knd_i5_mmu_data_pkg.vhdl',
+                          source     = cpu_or1knd_i5_mmu_data_pkg_source,
+                          SUBST_DICT = cpu_or1knd_i5_mmu_data_pkg_subst_dict
+                          )
+
+cpu_or1knd_i5_mmu_data_rtl_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'architecture rtl of cpu_or1knd_i5_mmu_data is',
+    'begin',
+    '',
+    '  @cpu_or1knd_i5_mmu_data_impl@ : entity work.cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@(rtl)',
+    '    port map (',
+    '      clk                                   => clk,',
+    '      rstn                                  => rstn,',
+    '',
+    '      cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_ctrl_in   => cpu_or1knd_i5_mmu_data_ctrl_in,',
+    '      cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_dp_in     => cpu_or1knd_i5_mmu_data_dp_in,',
+    '      cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_ctrl_out  => cpu_or1knd_i5_mmu_data_ctrl_out,',
+    '      cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_dp_out    => cpu_or1knd_i5_mmu_data_dp_out,',
+    '',
+    '      cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_ctrl_in_pipe   => cpu_or1knd_i5_mmu_data_ctrl_in_pipe,',
+    '      cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_ctrl_out_pipe  => cpu_or1knd_i5_mmu_data_ctrl_out_pipe,',
+    '      cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_dp_in_pipe     => cpu_or1knd_i5_mmu_data_dp_in_pipe,',
+    '      cpu_or1knd_i5_mmu_data_@cpu_or1knd_i5_mmu_data_impl@_dp_out_pipe    => cpu_or1knd_i5_mmu_data_dp_out_pipe',
+    '      );',
+    '',
+    'end;',
+    '',
+    ]
+cpu_or1knd_i5_mmu_data_rtl_subst_dict = dict()
+cpu_or1knd_i5_mmu_data_rtl_subst_dict['@cpu_or1knd_i5_mmu_data_impl@'] = cpu_or1knd_i5_mmu_data_impl
+cpu_or1knd_i5_mmu_data_rtl = \
+    textfile_env.Textfile(target     = 'cpu_or1knd_i5_mmu_data-rtl.vhdl',
+                          source     = cpu_or1knd_i5_mmu_data_rtl_source,
+                          SUBST_DICT = cpu_or1knd_i5_mmu_data_rtl_subst_dict
+                          )
+
+hdllibenv.HDLAnalyze(source = '#hdl/cpu/mmu/data/cpu_mmu_data_types_pkg.vhdl',
+                     provides = [VHDLPackage('cpu_mmu_data_types_pkg'),
+                                 ],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = cpu_or1knd_i5_mmu_data_pkg,
+                     provides = [VHDLPackage('cpu_or1knd_i5_mmu_data_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_types_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_mmu_data_%s_pkg' % cpu_or1knd_i5_mmu_data_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = 'cpu_mmu_data_pkg.vhdl',
+                     provides = [VHDLPackage('cpu_mmu_data_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_or1knd_i5_mmu_data_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_mmu_data.vhdl'],
+                     provides = [VHDLEntity('cpu_or1knd_i5_mmu_data'),
+                                 ],
+                     requires = [VHDLPackage('sys.sys_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_mmu_data_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = cpu_or1knd_i5_mmu_data_rtl,
+                     provides = [VHDLArchitecture('cpu_or1knd_i5_mmu_data(rtl)'),
+                                 ],
+                     requires = [VHDLArchitecture('cpu_or1knd_i5_mmu_data_%s(rtl)' % cpu_or1knd_i5_mmu_data_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+SConscript('#hdl/cpu/or1knd/i5/mmu/data/%s/HDLLibraryImport.scons' % cpu_or1knd_i5_mmu_data_impl,
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = cpu_or1knd_i5_mmu_data_impl,
+           duplicate = 0,
+           )

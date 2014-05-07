@@ -1,0 +1,66 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_bpb_bimod_config_pkg_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'library ieee;',
+    'use ieee.std_logic_1164.all;',
+    '',
+    'package cpu_bpb_bimod_config_pkg is',
+    ''
+    '  constant cpu_bpb_bimod_index_bits   : integer := @cpu_bpb_bimod_index_bits@;',
+    '  constant cpu_bpb_bimod_counter_bits : integer := @cpu_bpb_bimod_counter_bits@;',
+    ''
+    'end package;',
+    '',
+    ]
+cpu_bpb_bimod_config_pkg_subst_dict = dict()
+cpu_bpb_bimod_config_pkg_subst_dict['@cpu_bpb_bimod_index_bits@'] = \
+    kconfig['proj.%s.hdl.lib.%s.bpb.bimod.index_bits' % (project, hdllibrary)]
+cpu_bpb_bimod_config_pkg_subst_dict['@cpu_bpb_bimod_counter_bits@'] = \
+    kconfig['proj.%s.hdl.lib.%s.bpb.bimod.counter_bits' % (project, hdllibrary)]
+cpu_bpb_bimod_config_pkg = \
+    textfile_env.Textfile(target     = 'cpu_bpb_bimod_config_pkg.vhdl',
+                          source     = cpu_bpb_bimod_config_pkg_source,
+                          SUBST_DICT = cpu_bpb_bimod_config_pkg_subst_dict
+                          )
+
+hdllibenv.HDLAnalyze(source = cpu_bpb_bimod_config_pkg,
+                     provides = [VHDLPackage('cpu_bpb_bimod_config_pkg')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_bpb_bimod_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_bpb_bimod_pkg')],
+                     requires = [VHDLPackage('cpu_types_pkg'),
+                                 VHDLPackage('cpu_bpb_bimod_config_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_bpb_bimod.vhdl'],
+                     provides = [VHDLEntity('cpu_bpb_bimod'),
+                                 ],
+                     requires = [VHDLPackage('cpu_bpb_bimod_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_bpb_bimod-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_bpb_bimod(rtl)'),
+                                 ],
+                     requires = [VHDLPackage('util.logic_pkg'),
+                                 VHDLPackage('cpu_bpb_bimod_pkg'),
+                                 VHDLPackage('cpu_bpb_bimod_config_pkg'),
+                                 VHDLArchitecture('tech.syncram_1r1w(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )

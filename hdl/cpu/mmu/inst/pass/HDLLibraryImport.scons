@@ -1,0 +1,33 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+hdllibenv.HDLAnalyze(source = ['cpu_mmu_inst_pass_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_mmu_inst_pass_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_types_pkg'),
+                                 VHDLPackage('cpu_mmu_inst_types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_mmu_inst_pass.vhdl'],
+                     provides = [VHDLEntity('cpu_mmu_inst_pass')],
+                     requires = [VHDLPackage('cpu_mmu_inst_pkg'),
+                                 VHDLPackage('sys.sys_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_mmu_inst_pass-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_mmu_inst_pass(rtl)')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('cpu_types_pkg'),
+                                 VHDLPackage('cpu_mmu_inst_types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )

@@ -1,0 +1,44 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+
+SConscript('#hdl/tech/HDLProjectKconfig.scons',
+           exports = {'env'     : env,
+                      'kconfig' : kconfig,
+                      'project' : project,
+                      },
+           variantdir = 'hdl/tech',
+           duplicate = 0,
+           )
+
+sys_menu = kconfig.Menu('System Configuration')
+SConscript('#hdl/sys/HDLProjectKconfig.scons',
+           exports = {'env'       : env,
+                      'kconfig'   : sys_menu,
+                      'project'   : project,
+                      },
+           variantdir = 'hdl/sys',
+           duplicate = 0,
+           )
+
+cpu_or1knd_i5_menu = kconfig.Menu('OR1KND 5-stage Pipeline Configuration')
+
+SConscript('#hdl/cpu/or1knd/i5/HDLLibraryKconfig.scons',
+           exports = {'env'     : env,
+                      'kconfig'   : cpu_or1knd_i5_menu,
+                      'project'   : project,
+                      'hdllibrary': 'cpu_or1knd_i5',
+                      },
+           variantdir = 'hdl/cpu/or1knd/i5',
+           duplicate = 0,
+           )
+
+testbench_menu = kconfig.Menu('Testbench Configuration')
+
+testbench_menu.Config('proj.%s.hdl.cpu_or1knd_i5_min_sim.mem_latency' % project,
+                      prompt = '"Memory Latency (Cycles)"',
+                      type = 'int',
+                      default = '16',
+                      )

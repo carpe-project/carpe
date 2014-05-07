@@ -1,0 +1,377 @@
+# -*- python -*-
+
+import math
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_or1knd_i5_config_pkg_source = []
+cpu_or1knd_i5_config_pkg_source.extend([
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'library ieee;',
+    'use ieee.std_logic_1164.all;',
+    '',
+    'library isa;',
+    'use isa.or1k_pkg.all;',
+    '',
+    'package cpu_or1knd_i5_config_pkg is',
+    '',
+    '  constant cpu_or1knd_i5_mul_enable : boolean := @cpu_or1knd_i5_mul_enable@;',
+    '  constant cpu_or1knd_i5_mul_latency : natural := @cpu_or1knd_i5_mul_latency@;',
+    '  constant cpu_or1knd_i5_madd_enable : boolean := @cpu_or1knd_i5_madd_enable@;',
+    '  constant cpu_or1knd_i5_madd_latency : natural := @cpu_or1knd_i5_madd_latency@;',
+    '  constant cpu_or1knd_i5_div_latency : natural := @cpu_or1knd_i5_div_latency@;',
+    '  constant cpu_or1knd_i5_l1mem_data_write_alloc : boolean := @cpu_or1knd_i5_l1mem_data_write_alloc@;',
+    '  constant cpu_or1knd_i5_spr_sys_upr : or1k_spr_data_type := (',
+    '    or1k_spr_field_sys_upr_up => \'1\',',
+    '    or1k_spr_field_sys_upr_dcp => \'@cpu_or1knd_i5_spr_sys_upr_dcp@\',',
+    '    or1k_spr_field_sys_upr_icp => \'@cpu_or1knd_i5_spr_sys_upr_icp@\',',
+    '    or1k_spr_field_sys_upr_dmp => \'@cpu_or1knd_i5_spr_sys_upr_dmp@\',',
+    '    or1k_spr_field_sys_upr_imp => \'@cpu_or1knd_i5_spr_sys_upr_imp@\',',
+    '    or1k_spr_field_sys_upr_mp  => \'@cpu_or1knd_i5_spr_sys_upr_mp@\',',
+    '    others => \'0\'',
+    '    );',
+    '  constant cpu_or1knd_i5_spr_sys_cpucfgr : or1k_spr_data_type := (',
+    '    or1k_spr_field_sys_cpucfgr_ob32s => \'1\',',
+    '    or1k_spr_field_sys_cpucfgr_nd    => \'1\',',
+    '    or1k_spr_field_sys_cpucfgr_aecsrp => \'1\',',
+    '    others => \'0\'',
+    '    );',
+    '  constant cpu_or1knd_i5_spr_sys_dmmucfgr : or1k_spr_data_type := (',
+    '    or1k_spr_field_sys_dmmucfgr_ntw_lsb + 0 => \'@cpu_or1knd_i5_spr_sys_dmmucfgr_ntw0@\',',
+    '    or1k_spr_field_sys_dmmucfgr_ntw_lsb + 1 => \'@cpu_or1knd_i5_spr_sys_dmmucfgr_ntw1@\',',
+    '    or1k_spr_field_sys_dmmucfgr_nts_lsb + 0 => \'@cpu_or1knd_i5_spr_sys_dmmucfgr_nts0@\',',
+    '    or1k_spr_field_sys_dmmucfgr_nts_lsb + 1 => \'@cpu_or1knd_i5_spr_sys_dmmucfgr_nts1@\',',
+    '    or1k_spr_field_sys_dmmucfgr_nts_lsb + 2 => \'@cpu_or1knd_i5_spr_sys_dmmucfgr_nts2@\',',
+    '    others => \'0\'',
+    '    );',
+    '  constant cpu_or1knd_i5_spr_sys_immucfgr : or1k_spr_data_type := (',
+    '    or1k_spr_field_sys_immucfgr_ntw_lsb + 0 => \'@cpu_or1knd_i5_spr_sys_immucfgr_ntw0@\',',
+    '    or1k_spr_field_sys_immucfgr_ntw_lsb + 1 => \'@cpu_or1knd_i5_spr_sys_immucfgr_ntw1@\',',
+    '    or1k_spr_field_sys_immucfgr_nts_lsb + 0 => \'@cpu_or1knd_i5_spr_sys_immucfgr_nts0@\',',
+    '    or1k_spr_field_sys_immucfgr_nts_lsb + 1 => \'@cpu_or1knd_i5_spr_sys_immucfgr_nts1@\',',
+    '    or1k_spr_field_sys_immucfgr_nts_lsb + 2 => \'@cpu_or1knd_i5_spr_sys_immucfgr_nts2@\',',
+    '    others => \'0\'',
+    '    );',
+    '  constant cpu_or1knd_i5_spr_sys_iccfgr : or1k_spr_data_type := (',
+    '    or1k_spr_field_sys_iccfgr_ncw_lsb + 0 => \'@cpu_or1knd_i5_spr_sys_iccfgr_ncw0@\',',
+    '    or1k_spr_field_sys_iccfgr_ncw_lsb + 1 => \'@cpu_or1knd_i5_spr_sys_iccfgr_ncw1@\',',
+    '    or1k_spr_field_sys_iccfgr_ncw_lsb + 2 => \'@cpu_or1knd_i5_spr_sys_iccfgr_ncw2@\',',
+    '    or1k_spr_field_sys_iccfgr_ncs_lsb + 0 => \'@cpu_or1knd_i5_spr_sys_iccfgr_ncs0@\',',
+    '    or1k_spr_field_sys_iccfgr_ncs_lsb + 1 => \'@cpu_or1knd_i5_spr_sys_iccfgr_ncs1@\',',
+    '    or1k_spr_field_sys_iccfgr_ncs_lsb + 2 => \'@cpu_or1knd_i5_spr_sys_iccfgr_ncs2@\',',
+    '    or1k_spr_field_sys_iccfgr_ncs_lsb + 3 => \'@cpu_or1knd_i5_spr_sys_iccfgr_ncs3@\',',
+    '    others => \'0\'',
+    '    );',
+    '  constant cpu_or1knd_i5_spr_sys_dccfgr : or1k_spr_data_type := (',
+    '    or1k_spr_field_sys_dccfgr_cws         => \'@cpu_or1knd_i5_spr_sys_dccfgr_cws@\',',
+    '    or1k_spr_field_sys_dccfgr_ncw_lsb + 0 => \'@cpu_or1knd_i5_spr_sys_dccfgr_ncw0@\',',
+    '    or1k_spr_field_sys_dccfgr_ncw_lsb + 1 => \'@cpu_or1knd_i5_spr_sys_dccfgr_ncw1@\',',
+    '    or1k_spr_field_sys_dccfgr_ncw_lsb + 2 => \'@cpu_or1knd_i5_spr_sys_dccfgr_ncw2@\',',
+    '    or1k_spr_field_sys_dccfgr_ncs_lsb + 0 => \'@cpu_or1knd_i5_spr_sys_dccfgr_ncs0@\',',
+    '    or1k_spr_field_sys_dccfgr_ncs_lsb + 1 => \'@cpu_or1knd_i5_spr_sys_dccfgr_ncs1@\',',
+    '    or1k_spr_field_sys_dccfgr_ncs_lsb + 2 => \'@cpu_or1knd_i5_spr_sys_dccfgr_ncs2@\',',
+    '    or1k_spr_field_sys_dccfgr_ncs_lsb + 3 => \'@cpu_or1knd_i5_spr_sys_dccfgr_ncs3@\',',
+    '    others => \'0\'',
+    '    );',
+    ])
+cpu_or1knd_i5_config_pkg_source.extend([
+    ''
+    'end package;',
+    ])
+cpu_or1knd_i5_config_pkg_subst_dict = dict()
+cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_mul_enable@'] = 'true' if kconfig['proj.%s.hdl.lib.%s.or1knd.i5.mul_enable' % (project, hdllibrary)] else 'false';
+cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_div_latency@']  = kconfig['proj.%s.hdl.lib.%s.or1knd.i5.div_latency' % (project, hdllibrary)]
+cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_madd_enable@'] = 'true' if kconfig['proj.%s.hdl.lib.%s.or1knd.i5.madd_enable' % (project, hdllibrary)] else 'false';
+cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_madd_latency@'] = kconfig['proj.%s.hdl.lib.%s.or1knd.i5.madd_latency' % (project, hdllibrary)]
+cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_mul_latency@']  = kconfig['proj.%s.hdl.lib.%s.or1knd.i5.mul_latency' % (project, hdllibrary)]
+cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_l1mem_data_write_alloc@'] = 'true' if kconfig['proj.%s.hdl.lib.%s.or1knd.i5.l1mem.data.cache.write_alloc' % (project, hdllibrary)] else 'false';
+
+cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_upr_dcp@'] = '1' if kconfig['proj.%s.hdl.lib.%s.l1mem.data.impl' % (project, hdllibrary)] != 'pass' else '0'
+cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_upr_icp@'] = '1' if kconfig['proj.%s.hdl.lib.%s.l1mem.inst.impl' % (project, hdllibrary)] != 'pass' else '0'
+cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_upr_dmp@'] = '1' if kconfig['proj.%s.hdl.lib.%s.mmu.data.impl' % (project, hdllibrary)] != 'pass' else '0'
+cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_upr_imp@'] = '1' if kconfig['proj.%s.hdl.lib.%s.mmu.inst.impl' % (project, hdllibrary)] != 'pass' else '0'
+cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_upr_mp@'] = '1' if kconfig['proj.%s.hdl.lib.%s.or1knd.i5.madd_enable' % (project, hdllibrary)] else '0'
+
+# IMMUCFGR
+cpu_or1knd_i5_spr_sys_immucfgr_ntw = '00'
+for n in xrange(2):
+    cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_immucfgr_ntw%d@' % n] = cpu_or1knd_i5_spr_sys_immucfgr_ntw[n] if n < len(cpu_or1knd_i5_spr_sys_immucfgr_ntw) else '0'
+cpu_or1knd_i5_spr_sys_immucfgr_nts = '000'
+for n in xrange(3):
+    cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_immucfgr_nts%d@' % n] = cpu_or1knd_i5_spr_sys_immucfgr_nts[n] if n < len(cpu_or1knd_i5_spr_sys_immucfgr_nts) else '0'
+
+# DMMUCFGR
+cpu_or1knd_i5_spr_sys_dmmucfgr_ntw = '00'
+for n in xrange(2):
+    cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_dmmucfgr_ntw%d@' % n] = cpu_or1knd_i5_spr_sys_dmmucfgr_ntw[n] if n < len(cpu_or1knd_i5_spr_sys_dmmucfgr_ntw) else '0'
+cpu_or1knd_i5_spr_sys_dmmucfgr_nts = '000'
+for n in xrange(3):
+    cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_dmmucfgr_nts%d@' % n] = cpu_or1knd_i5_spr_sys_dmmucfgr_nts[n] if n < len(cpu_or1knd_i5_spr_sys_dmmucfgr_nts) else '0'
+
+# ICCFGR
+if kconfig['proj.%s.hdl.lib.%s.l1mem.inst.impl' % (project, hdllibrary)] == 'pass':
+    for n in xrange(3):
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_iccfgr_ncw%d@' % n] = '0'
+    for n in xrange(4):
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_iccfgr_ncs%d@' % n] = '0'
+    cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_iccfgr_bs@'] = '0'
+
+elif kconfig['proj.%s.hdl.lib.%s.l1mem.inst.impl' % (project, hdllibrary)] == 'cache':
+
+    log2_assoc = kconfig['proj.%s.hdl.lib.%s.l1mem.inst.cache.log2_assoc' % (project, hdllibrary)]
+    if log2_assoc > 0:
+        cpu_or1knd_i5_spr_sys_iccfgr_ncw = bin(log2_assoc)[:1:-1]
+    else:
+        cpu_or1knd_i5_spr_sys_iccfgr_ncw = '000'
+    for n in xrange(3):
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_iccfgr_ncw%d@' % n] = cpu_or1knd_i5_spr_sys_iccfgr_ncw[n] if n < len(cpu_or1knd_i5_spr_sys_iccfgr_ncw) else '0'
+
+    cpu_or1knd_i5_spr_sys_iccfgr_ncs = bin(kconfig['proj.%s.hdl.lib.%s.l1mem.inst.cache.index_bits' % (project, hdllibrary)])[:1:-1]
+    for n in xrange(4):
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_iccfgr_ncs%d@' % n] = cpu_or1knd_i5_spr_sys_iccfgr_ncs[n] if n < len(cpu_or1knd_i5_spr_sys_iccfgr_ncs) else '0'
+
+    if kconfig['proj.%s.hdl.lib.%s.l1mem.inst.cache.offset_bits' % (project, hdllibrary)] == 2:
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_iccfgr_bs@'] = '0'
+    elif kconfig['proj.%s.hdl.lib.%s.l1mem.inst.cache.offset_bits' % (project, hdllibrary)] == 3:
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_iccfgr_bs@'] = '1'
+    else:
+        Exit('invalid value for proj.%s.hdl.lib.%s.l1mem.inst.cache.offset_bits' % (project, hdllibrary))
+
+else:
+    Exit('unrecognized l1mem implementation')
+
+# DCCFGR
+if kconfig['proj.%s.hdl.lib.%s.l1mem.data.impl' % (project, hdllibrary)] == 'pass':
+    cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_dccfgr_cws@'] = '0'
+    for n in xrange(3):
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_dccfgr_ncw%d@' % n] = '0'
+    for n in xrange(4):
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_dccfgr_ncs%d@' % n] = '0'
+    cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_dccfgr_bs@'] = '0'
+
+elif kconfig['proj.%s.hdl.lib.%s.l1mem.data.impl' % (project, hdllibrary)] == 'cache':
+    cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_dccfgr_cws@'] = \
+        '1' if kconfig['proj.%s.hdl.lib.%s.or1knd.i5.l1mem.data.cache.write_back' % (project, hdllibrary)] else '0'
+
+    log2_assoc = kconfig['proj.%s.hdl.lib.%s.l1mem.data.cache.log2_assoc' % (project, hdllibrary)]
+    if log2_assoc > 0:
+        cpu_or1knd_i5_spr_sys_dccfgr_ncw = bin(log2_assoc)[:1:-1]
+    else:
+        cpu_or1knd_i5_spr_sys_dccfgr_ncw = '000'
+    for n in xrange(3):
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_dccfgr_ncw%d@' % n] = cpu_or1knd_i5_spr_sys_dccfgr_ncw[n] if n < len(cpu_or1knd_i5_spr_sys_dccfgr_ncw) else '0'
+
+    cpu_or1knd_i5_spr_sys_dccfgr_ncs = bin(kconfig['proj.%s.hdl.lib.%s.l1mem.data.cache.index_bits' % (project, hdllibrary)])[:1:-1]
+    for n in xrange(4):
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_dccfgr_ncs%d@' % n] = cpu_or1knd_i5_spr_sys_dccfgr_ncs[n] if n < len(cpu_or1knd_i5_spr_sys_dccfgr_ncs) else '0'
+
+    if kconfig['proj.%s.hdl.lib.%s.l1mem.data.cache.offset_bits' % (project, hdllibrary)] == 4:
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_dccfgr_bs@'] = '0'
+    elif kconfig['proj.%s.hdl.lib.%s.l1mem.data.cache.offset_bits' % (project, hdllibrary)] == 5:
+        cpu_or1knd_i5_config_pkg_subst_dict['@cpu_or1knd_i5_spr_sys_dccfgr_bs@'] = '1'
+    else:
+        Exit('invalid value for proj.%s.hdl.lib.%s.l1mem.data.cache.offset_bits' % (project, hdllibrary))
+
+else:
+    Exit('unrecognized l1mem implementation')
+
+
+# targets
+
+cpu_or1knd_i5_config_pkg = \
+    textfile_env.Textfile(target = 'cpu_or1knd_i5_config_pkg.vhdl',
+                          source = cpu_or1knd_i5_config_pkg_source,
+                          SUBST_DICT = cpu_or1knd_i5_config_pkg_subst_dict,
+                          )
+
+hdllibenv.HDLAnalyze(source = cpu_or1knd_i5_config_pkg,
+                     provides = [VHDLPackage('cpu_or1knd_i5_config_pkg')],
+                     requires = [VHDLPackage('isa.or1k_pkg')],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_or1knd_i5_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_or1knd_i5_config_pkg'),
+                                 VHDLPackage('isa.or1k_pkg'),
+                                 VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('util.numeric_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_types_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_types_pkg')],
+                     requires = [VHDLPackage('isa.or1k_pkg'),
+                                 VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_core.vhdl'],
+                     provides = [VHDLEntity('cpu_or1knd_i5_core')],
+                     requires = [VHDLPackage('isa.or1k_pkg'),
+                                 VHDLPackage('sys.sys_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_core-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_or1knd_i5_core(rtl)')],
+                     requires = [VHDLPackage('cpu_or1knd_i5_pipe_pkg'),
+                                 VHDLPackage('cpu_mmu_inst_pkg'),
+                                 VHDLPackage('cpu_mmu_data_pkg'),
+                                 VHDLArchitecture('cpu_or1knd_i5_pipe(rtl)'),
+                                 VHDLArchitecture('cpu_l1mem_inst(rtl)'),
+                                 VHDLArchitecture('cpu_l1mem_data(rtl)'),
+                                 VHDLArchitecture('cpu_or1knd_i5_mmu_inst(rtl)'),
+                                 VHDLArchitecture('cpu_or1knd_i5_mmu_data(rtl)'),
+                                 VHDLArchitecture('sys.sys_master_arb(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_pipe_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_or1knd_i5_pipe_pkg')],
+                     requires = [VHDLPackage('isa.or1k_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_pipe.vhdl'],
+                     provides = [VHDLEntity('cpu_or1knd_i5_pipe')],
+                     requires = [VHDLPackage('isa.or1k_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_pipe_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_mmu_inst_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_mmu_data_pkg'),
+                                 VHDLPackage('cpu_mmu_inst_pkg'),
+                                 VHDLPackage('cpu_mmu_data_pkg'),
+                                 VHDLPackage('cpu_l1mem_inst_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_pipe-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_or1knd_i5_pipe(rtl)')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('cpu_bpb_pkg'),
+                                 VHDLPackage('cpu_btb_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_pipe_pkg'),
+                                 VHDLArchitecture('cpu_bpb(rtl)'),
+                                 VHDLArchitecture('cpu_btb(rtl)'),
+                                 VHDLArchitecture('cpu_or1knd_i5_pipe_ctrl(rtl)'),
+                                 VHDLArchitecture('cpu_or1knd_i5_pipe_dp(rtl)'),
+                                 VHDLArchitecture('tech.addsub(rtl)'),
+                                 VHDLArchitecture('tech.shifter(rtl)'),
+                                 VHDLArchitecture('tech.mul_trunc_seq(rtl)'),
+                                 VHDLArchitecture('tech.madd_seq(rtl)'),
+                                 VHDLArchitecture('tech.div_seq(rtl)'),
+                                 VHDLArchitecture('tech.syncram_2r1w(rtl)'),
+                                 ],
+                     sim_requires = [VHDLArchitecture('sim.monitor_sync_watch(behav)'),
+                                     ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_pipe_ctrl.vhdl'],
+                     provides = [VHDLEntity('cpu_or1knd_i5_pipe_ctrl')],
+                     requires = [VHDLPackage('isa.or1k_pkg'),
+                                 VHDLPackage('cpu_bpb_pkg'),
+                                 VHDLPackage('cpu_btb_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_pipe_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_mmu_inst_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_mmu_data_pkg'),
+                                 VHDLPackage('cpu_l1mem_inst_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_pipe_ctrl-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_or1knd_i5_pipe_ctrl(rtl)')],
+                     requires = [VHDLPackage('isa.or1k_pkg'),
+                                 VHDLPackage('util.logic_pkg'),
+                                 VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_pipe_pkg'),
+                                 VHDLPackage('cpu_l1mem_inst_pkg'),
+                                 VHDLPackage('cpu_l1mem_inst_types_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_types_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_mmu_inst_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_mmu_data_pkg'),
+                                 VHDLArchitecture('tech.prioritizer(rtl)'),
+                                 ],
+                     sim_requires = [VHDLPackage('util.names_pkg'),
+                                     VHDLPackage('sim.options_pkg'),
+                                     VHDLPackage('sim.monitor_pkg'),
+                                     VHDLArchitecture('sim.monitor_sync_watch(behav)'),
+                                     ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_pipe_dp.vhdl'],
+                     provides = [VHDLEntity('cpu_or1knd_i5_pipe_dp')],
+                     requires = [VHDLPackage('isa.or1k_pkg'),
+                                 VHDLPackage('cpu_bpb_pkg'),
+                                 VHDLPackage('cpu_btb_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_pipe_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_mmu_inst_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_mmu_data_pkg'),
+                                 VHDLPackage('cpu_l1mem_inst_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_pipe_dp-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_or1knd_i5_pipe_dp(rtl)')],
+                     requires = [VHDLPackage('util.logic_pkg'),
+                                 VHDLPackage('util.numeric_pkg'),
+                                 VHDLPackage('isa.or1k_pkg'),
+                                 VHDLPackage('cpu_or1knd_i5_pipe_pkg'),
+                                 ],
+                     sim_requires = [VHDLPackage('util.names_pkg'),
+                                     VHDLPackage('sim.monitor_pkg'),
+                                     VHDLArchitecture('sim.monitor_sync_watch(behav)'),
+                                     ],
+                     standard = 'vhdl00',
+                     )
+
+SConscript('#hdl/cpu/bpb/HDLLibraryImport.scons',
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = 'bpb',
+           duplicate = 0,
+           )
+SConscript('#hdl/cpu/btb/HDLLibraryImport.scons',
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = 'btb',
+           duplicate = 0,
+           )
+SConscript('#hdl/cpu/l1mem/HDLLibraryImport.scons',
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = 'l1mem',
+           duplicate = 0,
+           )
+SConscript('#hdl/cpu/or1knd/i5/mmu/HDLLibraryImport.scons',
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = 'mmu',
+           duplicate = 0,
+           )

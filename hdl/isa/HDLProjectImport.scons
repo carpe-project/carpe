@@ -1,0 +1,17 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdlprojenv')
+Import('kconfig')
+Import('project')
+
+hdllibenv = hdlprojenv.HDLLibraryEnvironment('isa')
+
+hdllibenv.HDLAnalyze(source = ['or1k_pkg.vhdl'],
+                     provides = [VHDLPackage('or1k_pkg')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('util.numeric_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )

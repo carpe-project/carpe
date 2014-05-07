@@ -1,0 +1,86 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdlprojenv')
+Import('kconfig')
+Import('project')
+
+hdllibenv = hdlprojenv.HDLLibraryEnvironment('mem')
+
+hdllibenv.HDLAnalyze(source = ['cache/core/cache_core_1rw.vhdl'],
+                     provides = [VHDLEntity('cache_core_1rw')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cache/core/cache_core_1rw-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cache_core_1rw(rtl)')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('util.logic_pkg'),
+                                 VHDLArchitecture('tech.syncram_banked_1rw(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cache/core/cache_core_1r1w.vhdl'],
+                     provides = [VHDLEntity('cache_core_1r1w')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cache/core/cache_core_1r1w-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cache_core_1r1w(rtl)')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('util.logic_pkg'),
+                                 VHDLArchitecture('tech.syncram_banked_1r1w(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cache/core/cache_core_banked_1rw.vhdl'],
+                     provides = [VHDLEntity('cache_core_banked_1rw')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cache/core/cache_core_banked_1rw-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cache_core_banked_1rw(rtl)')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('util.logic_pkg'),
+                                 VHDLArchitecture('tech.syncram_banked_1rw(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cache/core/cache_core_banked_1r1w.vhdl'],
+                     provides = [VHDLEntity('cache_core_banked_1r1w')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cache/core/cache_core_banked_1r1w-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cache_core_banked_1r1w(rtl)')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('util.logic_pkg'),
+                                 VHDLArchitecture('tech.syncram_banked_1r1w(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cache/replace/cache_replace_lru.vhdl'],
+                     provides = [VHDLEntity('cache_replace_lru'),
+                                 ],
+                     requires = [VHDLPackage('util.numeric_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cache/replace/cache_replace_lru-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cache_replace_lru(rtl)'),
+                                 ],
+                     requires = [VHDLPackage('util.numeric_pkg'),
+                                 VHDLPackage('util.logic_pkg'),
+                                 VHDLArchitecture('tech.decoder(rtl)'),
+                                 VHDLArchitecture('tech.encoder(rtl)'),
+                                 VHDLArchitecture('tech.syncram_1r1w(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )

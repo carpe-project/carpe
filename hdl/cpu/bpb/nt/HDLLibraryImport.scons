@@ -1,0 +1,30 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+hdllibenv.HDLAnalyze(source = ['cpu_bpb_nt_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_bpb_nt_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_bpb_nt.vhdl'],
+                     provides = [VHDLEntity('cpu_bpb_nt'),
+                                 ],
+                     requires = [VHDLPackage('cpu_bpb_nt_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_bpb_nt-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_bpb_nt(rtl)'),
+                                 ],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )

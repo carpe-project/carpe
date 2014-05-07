@@ -1,0 +1,42 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_mmu_inst_pass_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_or1knd_i5_mmu_inst_pass_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_mmu_inst_types_pkg'),
+                                 VHDLPackage('cpu_mmu_inst_pass_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_mmu_inst_pass.vhdl'],
+                     provides = [VHDLEntity('cpu_or1knd_i5_mmu_inst_pass')],
+                     requires = [VHDLPackage('cpu_or1knd_i5_mmu_inst_pkg'),
+                                 VHDLPackage('sys.sys_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_or1knd_i5_mmu_inst_pass-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_or1knd_i5_mmu_inst_pass(rtl)'),
+                                 ],
+                     requires = [VHDLArchitecture('cpu_mmu_inst_pass(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+SConscript('#hdl/cpu/mmu/inst/pass/HDLLibraryImport.scons',
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = 'pass',
+           duplicate = 0,
+           )

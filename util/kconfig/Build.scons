@@ -1,0 +1,93 @@
+# -*- python -*-
+
+Import('env')
+
+kconfig_env = env.Clone(tools = ['default'])
+
+kconfig_env.SetDefault(GPERF = kconfig_env.Detect('gperf') or 'gperf',
+                       SED = kconfig_env.Detect('sed') or 'sed',
+                       KCONFIG_CPPFLAGS = ['-DCURSES_LOC=\'$KCONFIG_CURSES_LOC\'',
+                                           ],
+                       KCONFIG_ROOTMENU = 'KConfig',
+                       KCONFIG_CONFIG_ = '',
+                       KCONFIG_CURSES_LOC = '<ncurses.h>',
+                       KCONFIG_MCONF_LIBS = ['ncurses'],
+                       KCONFIG_NCONF_LIBS = ['ncurses', 'panel', 'menu'],
+                       KCONFIG_ENABLE_MCONF = True,
+                       KCONFIG_ENABLE_NCONF = True,
+                       )
+kconfig_env.Append(CPPFLAGS = ['$KCONFIG_CPPFLAGS'])
+
+libparser_hconf_c  = kconfig_env.Command(target = 'libs/parser/hconf.c',
+                                         source = 'libs/parser/hconf.gperf',
+                                         action = '$GPERF -t --output-file $TARGET -a -C -E -g -k \'1,3,$$\' -p -t $SOURCE',
+                                         )
+
+libparser_lconf_c  = kconfig_env.CFile(target = 'libs/parser/lconf.c',
+                                       source = 'libs/parser/lconf.l',
+                                       LEXFLAGS = ['-L', '-P', 'zconf'],
+                                       )
+libparser_zconf_c  = kconfig_env.CFile(target = 'libs/parser/yconf.c',
+                                       source = 'libs/parser/yconf.y',
+                                       YACCFLAGS = ['-t', '-l', '-p', 'zconf'],
+                                       )
+libparser          = kconfig_env.Library(target = 'libs/parser/libparser',
+                                         source = ['libs/parser/yconf.c',
+                                                   ],
+                                         CPPPATH = ['libs/parser'],
+                                         CPPDEFINES = ['-DROOTMENU=\\"$KCONFIG_ROOTMENU\\"',
+                                                       '-DCONFIG_=\\"$KCONFIG_CONFIG_\\"',
+                                                       ],
+                                         )
+
+libimages_images_c = kconfig_env.Command(target = 'libs/images/images.c',
+                                         source = 'libs/images/images.c_orig',
+                                         action = '$SED -e \'s/^static //\' $SOURCE > $TARGET',
+                                         )
+
+libimages_images_h = kconfig_env.Command(target = 'libs/images/images.h',
+                                         source = 'libs/images/images.c_orig',
+                                         action = '$SED -e \'/^static \\(const char \\*xpm_\\(.\\{1,\\}\\)\\[\\]\\) = {/!d; s//extern \\1;/\' < $SOURCE > $TARGET',
+                                         )
+
+libimages          = kconfig_env.Library(target = 'libs/images/libimages',
+                                         source = ['libs/images/images.c',
+                                                   ],
+                                         )
+
+liblxdialog         = kconfig_env.Library(target = 'libs/lxdialog/liblxdialog',
+                                          source = ['libs/lxdialog/checklist.c',
+                                                    'libs/lxdialog/inputbox.c',
+                                                    'libs/lxdialog/menubox.c',
+                                                    'libs/lxdialog/textbox.c',
+                                                    'libs/lxdialog/util.c',
+                                                    'libs/lxdialog/yesno.c',
+                                                    ],
+                                          )
+
+conf                = kconfig_env.Program(target = 'frontends/conf/conf',
+                                          source = 'frontends/conf/conf.c',
+                                          CPPPATH = ['libs/parser',
+                                                     ],
+                                          LIBS = libparser,
+                                          )
+
+if 'mconf' in kconfig_env['KCONFIG_FRONTEND']:
+    mconf = kconfig_env.Program(target = 'frontends/mconf/mconf',
+                                source = 'frontends/mconf/mconf.c',
+                                CPPPATH = ['libs/parser',
+                                           'libs',
+                                           ],
+                                LIBS = [libparser, liblxdialog, '$KCONFIG_MCONF_LIBS'],
+                                )
+
+if 'nconf' in kconfig_env['KCONFIG_FRONTEND']:
+    nconf = kconfig_env.Program(target = 'frontends/nconf/nconf',
+                                source = ['frontends/nconf/nconf.c',
+                                          'frontends/nconf/nconf.gui.c',
+                                          ],
+                                CPPPATH = ['libs/parser',
+                                           'libs',
+                                           ],
+                                LIBS = [libparser, liblxdialog, '$KCONFIG_NCONF_LIBS'],
+                                )

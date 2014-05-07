@@ -1,0 +1,35 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+l1mem_inst_impls = [
+    ('pass',  'Pass through to system bus', None),
+    ('cache', 'Instruction Cache',          'L1 Instruction Cache'),
+    ]
+
+l1mem_inst_valuelist = kconfig.ValueList('proj.%s.hdl.lib.%s.l1mem.inst.impl' % (project, hdllibrary),
+                                         prompt = '"L1 Instruction Memory"',
+                                         )
+
+for impl_symbol, impl_prompt, impl_menu_title in l1mem_inst_impls:
+
+    l1mem_inst_valuelist.Value('proj.%s.hdl.lib.%s.l1mem.inst.impl.%s' % (project, hdllibrary, impl_symbol),
+                               prompt = '"%s"' % impl_prompt,
+                               value = impl_symbol,
+                               )
+    if impl_menu_title is not None:
+        impl_config_menu = kconfig.Menu('%s Configuration' % impl_menu_title,
+                                        depends_on = 'proj.%s.hdl.lib.%s.l1mem.inst.impl.%s' % (project, hdllibrary, impl_symbol),
+                                        )
+        SConscript('%s/HDLLibraryKconfig.scons' % impl_symbol,
+                   exports = {'env'        : env,
+                              'kconfig'    : impl_config_menu,
+                              'project'    : project,
+                              'hdllibrary' : hdllibrary,
+                              },
+                   variantdir = impl_symbol,
+                   duplicate = 0,
+                   )

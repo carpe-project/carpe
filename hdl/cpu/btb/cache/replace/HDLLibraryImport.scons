@@ -1,0 +1,101 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+cpu_btb_cache_replace_impl = kconfig['proj.%s.hdl.lib.%s.btb.cache.replace.impl' % (project, hdllibrary)]
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_btb_cache_replace_pkg_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'library ieee;',
+    'use ieee.std_logic_1164.all;',
+    '',
+    'use work.cpu_btb_cache_replace_@cpu_btb_cache_replace_impl@_pkg.all;',
+    '',
+    'package cpu_btb_cache_replace_pkg is',
+    '',
+    '  constant cpu_btb_cache_replace_state_bits : natural := cpu_btb_cache_replace_@cpu_btb_cache_replace_impl@_state_bits;',
+    '  subtype cpu_btb_cache_replace_state_type is cpu_btb_cache_replace_@cpu_btb_cache_replace_impl@_state_type;',
+    '  ',
+    '  subtype cpu_btb_cache_replace_ctrl_in_type  is cpu_btb_cache_replace_@cpu_btb_cache_replace_impl@_ctrl_in_type;',
+    '  subtype cpu_btb_cache_replace_dp_in_type    is cpu_btb_cache_replace_@cpu_btb_cache_replace_impl@_dp_in_type;',
+    '  subtype cpu_btb_cache_replace_dp_out_type   is cpu_btb_cache_replace_@cpu_btb_cache_replace_impl@_dp_out_type;',
+    ''
+    'end package;',
+    '',
+    ]
+cpu_btb_cache_replace_pkg_subst_dict = dict()
+cpu_btb_cache_replace_pkg_subst_dict['@cpu_btb_cache_replace_impl@'] = cpu_btb_cache_replace_impl
+cpu_btb_cache_replace_pkg = \
+    textfile_env.Textfile(target     = 'cpu_btb_cache_replace_pkg.vhdl',
+                          source     = cpu_btb_cache_replace_pkg_source,
+                          SUBST_DICT = cpu_btb_cache_replace_pkg_subst_dict
+                          )
+
+cpu_btb_cache_replace_rtl_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'use work.cpu_btb_cache_replace_@cpu_btb_cache_replace_impl@_pkg.all;',
+    'use work.cpu_btb_cache_replace_pkg.all;',
+    '',
+    'architecture rtl of cpu_btb_cache_replace is',
+    'begin',
+    '',
+    '  @cpu_btb_cache_replace_impl@ : entity work.cpu_btb_cache_replace_@cpu_btb_cache_replace_impl@(rtl)',
+    '    port map (',
+    '      clk                             => clk,',
+    '      rstn                            => rstn,',
+    '      cpu_btb_cache_replace_@cpu_btb_cache_replace_impl@_ctrl_in  => cpu_btb_cache_replace_ctrl_in,',
+    '      cpu_btb_cache_replace_@cpu_btb_cache_replace_impl@_dp_in    => cpu_btb_cache_replace_dp_in,',
+    '      cpu_btb_cache_replace_@cpu_btb_cache_replace_impl@_dp_out   => cpu_btb_cache_replace_dp_out',
+    '      );',
+    '',
+    'end;',
+    '',
+    ]
+cpu_btb_cache_replace_rtl_subst_dict = dict()
+cpu_btb_cache_replace_rtl_subst_dict['@cpu_btb_cache_replace_impl@'] = cpu_btb_cache_replace_impl
+cpu_btb_cache_replace_rtl = \
+    textfile_env.Textfile(target     = 'cpu_btb_cache_replace-rtl.vhdl',
+                          source     = cpu_btb_cache_replace_rtl_source,
+                          SUBST_DICT = cpu_btb_cache_replace_rtl_subst_dict
+                          )
+
+hdllibenv.HDLAnalyze(source = cpu_btb_cache_replace_pkg,
+                     provides = [VHDLPackage('cpu_btb_cache_replace_pkg')],
+                     requires = [VHDLPackage('cpu_btb_cache_replace_%s_pkg' % cpu_btb_cache_replace_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_btb_cache_replace.vhdl'],
+                     provides = [VHDLEntity('cpu_btb_cache_replace'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_cache_pkg'),
+                                 VHDLPackage('cpu_btb_cache_replace_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = cpu_btb_cache_replace_rtl,
+                     provides = [VHDLArchitecture('cpu_btb_cache_replace(rtl)')],
+                     requires = [VHDLPackage('cpu_btb_cache_replace_%s_pkg' % cpu_btb_cache_replace_impl),
+                                 VHDLArchitecture('cpu_btb_cache_replace_%s(rtl)' % cpu_btb_cache_replace_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+SConscript('#hdl/cpu/btb/cache/replace/%s/HDLLibraryImport.scons' % cpu_btb_cache_replace_impl,
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = cpu_btb_cache_replace_impl,
+           duplicate = 0,
+           )

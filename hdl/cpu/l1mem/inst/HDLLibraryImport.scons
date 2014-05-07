@@ -1,0 +1,117 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+cpu_l1mem_inst_impl = kconfig['proj.%s.hdl.lib.%s.l1mem.inst.impl' % (project, hdllibrary)]
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_l1mem_inst_pkg_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'library ieee;',
+    'use ieee.std_logic_1164.all;',
+    '',
+    'use work.cpu_l1mem_inst_@cpu_l1mem_inst_impl@_pkg.all;',
+    '',
+    'package cpu_l1mem_inst_pkg is',
+    ''
+    '  subtype cpu_l1mem_inst_ctrl_in_type  is cpu_l1mem_inst_@cpu_l1mem_inst_impl@_ctrl_in_type;',
+    '  subtype cpu_l1mem_inst_dp_in_type    is cpu_l1mem_inst_@cpu_l1mem_inst_impl@_dp_in_type;',
+    '  subtype cpu_l1mem_inst_ctrl_out_type is cpu_l1mem_inst_@cpu_l1mem_inst_impl@_ctrl_out_type;',
+    '  subtype cpu_l1mem_inst_dp_out_type   is cpu_l1mem_inst_@cpu_l1mem_inst_impl@_dp_out_type;',
+    ''
+    'end package;',
+    '',
+    ]
+cpu_l1mem_inst_pkg_subst_dict = dict()
+cpu_l1mem_inst_pkg_subst_dict['@cpu_l1mem_inst_impl@'] = cpu_l1mem_inst_impl
+cpu_l1mem_inst_pkg = \
+    textfile_env.Textfile(target     = 'cpu_l1mem_inst_pkg.vhdl',
+                          source     = cpu_l1mem_inst_pkg_source,
+                          SUBST_DICT = cpu_l1mem_inst_pkg_subst_dict
+                          )
+
+cpu_l1mem_inst_rtl_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'architecture rtl of cpu_l1mem_inst is',
+    'begin',
+    '',
+    '  @cpu_l1mem_inst_impl@ : entity work.cpu_l1mem_inst_@cpu_l1mem_inst_impl@(rtl)',
+    '    port map (',
+    '      clk                                   => clk,',
+    '      rstn                                  => rstn,',
+    '',
+    '      cpu_mmu_inst_ctrl_in => cpu_mmu_inst_ctrl_in,',
+    '      cpu_mmu_inst_dp_in   => cpu_mmu_inst_dp_in,',
+    '      cpu_mmu_inst_ctrl_out => cpu_mmu_inst_ctrl_out,',
+    '      cpu_mmu_inst_dp_out   => cpu_mmu_inst_dp_out,',
+    '',
+    '      cpu_l1mem_inst_@cpu_l1mem_inst_impl@_ctrl_out      => cpu_l1mem_inst_ctrl_out,',
+    '      cpu_l1mem_inst_@cpu_l1mem_inst_impl@_dp_out        => cpu_l1mem_inst_dp_out,',
+    '      cpu_l1mem_inst_@cpu_l1mem_inst_impl@_ctrl_in       => cpu_l1mem_inst_ctrl_in,',
+    '      cpu_l1mem_inst_@cpu_l1mem_inst_impl@_dp_in         => cpu_l1mem_inst_dp_in,',
+    '',
+    '      sys_master_ctrl_out           => sys_master_ctrl_out,',
+    '      sys_master_dp_out             => sys_master_dp_out,',
+    '      sys_slave_ctrl_out            => sys_slave_ctrl_out,',
+    '      sys_slave_dp_out              => sys_slave_dp_out',
+    '      );',
+    '',
+    'end;',
+    '',
+    ]
+cpu_l1mem_inst_rtl_subst_dict = dict()
+cpu_l1mem_inst_rtl_subst_dict['@cpu_l1mem_inst_impl@'] = cpu_l1mem_inst_impl
+cpu_l1mem_inst_rtl = \
+    textfile_env.Textfile(target     = 'cpu_l1mem_inst-rtl.vhdl',
+                          source     = cpu_l1mem_inst_rtl_source,
+                          SUBST_DICT = cpu_l1mem_inst_rtl_subst_dict
+                          )
+
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_inst_types_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_l1mem_inst_types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = cpu_l1mem_inst_pkg,
+                     provides = [VHDLPackage('cpu_l1mem_inst_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_l1mem_inst_%s_pkg' % cpu_l1mem_inst_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_inst.vhdl'],
+                     provides = [VHDLEntity('cpu_l1mem_inst'),
+                                 ],
+                     requires = [VHDLPackage('sys.sys_pkg'),
+                                 VHDLPackage('cpu_mmu_inst_pkg'),
+                                 VHDLPackage('cpu_l1mem_inst_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = cpu_l1mem_inst_rtl,
+                     provides = [VHDLArchitecture('cpu_l1mem_inst(rtl)'),
+                                 ],
+                     requires = [VHDLArchitecture('cpu_l1mem_inst_%s(rtl)' % cpu_l1mem_inst_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+SConscript('#hdl/cpu/l1mem/inst/%s/HDLLibraryImport.scons' % cpu_l1mem_inst_impl,
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = cpu_l1mem_inst_impl,
+           duplicate = 0,
+           )

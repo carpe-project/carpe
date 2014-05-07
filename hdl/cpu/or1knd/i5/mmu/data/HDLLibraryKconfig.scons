@@ -1,0 +1,38 @@
+# -*- python -*-
+
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+mmu_data_impls = [
+    ('pass', 'No translation', None),
+#    ('tlb', 'Translation Lookaside Buffer', 'Data Translation Lookaside Buffer'),
+    ]
+mmu_data_impl_default = 'pass'
+
+mmu_data_choice = kconfig.Choice(prompt = '"Data Memory Management Unit Type"',
+                            default = 'proj.%s.hdl.lib.%s.mmu.data.impl.%s' % (project, hdllibrary, mmu_data_impl_default),
+                            )
+
+for symbol, prompt, config_menu_title in mmu_data_impls:
+    mmu_data_choice.Config('proj.%s.hdl.lib.%s.mmu.data.impl.%s' % (project, hdllibrary, symbol),
+                             prompt = '"%s"' % prompt,
+                             )
+    if config_menu_title is not None:
+        config_menu = kconfig.Menu('%s Configuration' % config_menu_title,
+                                   depends_on = 'proj.%s.hdl.lib.%s.mmu.data.impl.%s' % (project, hdllibrary, symbol),
+                                   )
+        SConscript('%s/HDLLibraryKconfig.scons' % symbol,
+                   exports = {'kconfig'    : config_menu,
+                              'project'    : project,
+                              'hdllibrary' : hdllibrary,
+                              },
+                   variantdir = symbol,
+                   duplicate = 0,
+                   )
+
+kconfig.Config('proj.%s.hdl.lib.%s.mmu.data.impl' % (project, hdllibrary),
+               type = 'string',
+               default = ['"%s" if proj.%s.hdl.lib.%s.mmu.data.impl.%s' % (mmu_data_impl[0], project, hdllibrary, mmu_data_impl[0])
+                          for mmu_data_impl in mmu_data_impls],
+               )

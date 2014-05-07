@@ -1,0 +1,323 @@
+#!/usr/bin/python
+
+import os
+import sys
+import threading
+import re
+import subprocess
+import select
+import tempfile
+import getopt
+import gzip
+
+sim_tool = @sim_tool@
+
+options = dict()
+
+getopt_opts, getopt_args = getopt.getopt(args = sys.argv[1:],
+                                         shortopts = 'vm:c:gzf:',
+                                         longopts = ['verbose',
+                                                     'monitor-output=',
+                                                     'commit-trace=',
+                                                     'gui',
+                                                     'gzip',
+                                                     'format=',
+                                                     ],
+                                         )
+
+verbose = False
+commit_trace_file = None
+monitor_output_file = None
+use_gzip = True
+run_gui = False
+commit_trace_filename = None
+monitor_output_filename = None
+exec_format = None
+
+valid_formats = ['elf', 'srec']
+
+for o, v in getopt_opts:
+    if o in ['-v', '--verbose']:
+        verbose = True
+    elif o in ['-c', '--commit-trace']:
+        commit_trace_filename = v
+    elif o in ['-z', '--gzip']:
+        use_gzip = True
+    elif o in ['-m', '--monitor-output']:
+        monitor_output_filename = v
+    elif o in ['-g', '--gui']:
+        run_gui = True
+    elif o in ['-f', '--format']:
+        if exec_format is not None:
+            raise Exception('multiple formats given')
+        exec_format = v
+        if exec_format not in valid_formats:
+            raise Exception('invalid format: ' + exec_format)
+    else:
+        raise Exception('invalid argument: ' + o)
+
+if len(getopt_args) < 1:
+    raise Exception('not enough arguments')
+if len(getopt_args) > 1:
+    raise Exception('too many arguments')
+
+monitor_fifo_filename = 'cpu_or1knd_i5_min_sim-monitor.%d' % os.getpid()
+
+if exec_format is None:
+    exec_format = 'srec'
+tmp_srec_filename = None
+if exec_format != 'srec':
+    tmp_srec_filename = 'cpu_or1knd_i5_min_sim.srec.{:d}'.format(os.getpid())
+if tmp_srec_filename is None:
+    srec_filename = getopt_args[0]
+else:
+    srec_filename = tmp_srec_filename
+
+if verbose:
+    options['verbose'] = 'true'
+
+options[':cpu_or1knd_i5_min_sim_top::monitor_enable'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top::monitor_output_filename'] = monitor_fifo_filename
+options[':cpu_or1knd_i5_min_sim_top:mem::srec_file'] = srec_filename
+
+# options[':cpu_or1knd_i5_min_sim_top::a_mem_en:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top::a_mem_write:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top::a_mem_be:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top::a_mem_size:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top::a_mem_paddr:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top::a_mem_din:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top::b_mem_dout:monitor'] = 'true'
+
+options[':cpu_or1knd_i5_min_sim_top:core:pipe::regfile_we:monitor'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top:core:pipe::regfile_waddr:monitor'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top:core:pipe::regfile_wdata:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top:core:pipe::regfile_re1:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top:core:pipe::regfile_raddr1:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top:core:pipe::regfile_rdata1:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top:core:pipe::regfile_re2:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top:core:pipe::regfile_raddr2:monitor'] = 'true'
+# options[':cpu_or1knd_i5_min_sim_top:core:pipe::regfile_rdata2:monitor'] = 'true'
+
+options[':cpu_or1knd_i5_min_sim_top:core:l1mem_inst:cache:ctrl::a_dram_en:monitor'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top:core:l1mem_inst:cache:ctrl::a_dram_we:monitor'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top:core:l1mem_inst:cache:ctrl::a_tram_en:monitor'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top:core:l1mem_inst:cache:ctrl::a_tram_we:monitor'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top:core:l1mem_inst:cache:ctrl::a_vram_re:monitor'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top:core:l1mem_inst:cache:ctrl::b_vram_we:monitor'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top:core:l1mem_inst:cache:ctrl::a_replace_re:monitor'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top:core:l1mem_inst:cache:ctrl::b_replace_we:monitor'] = 'true'
+
+options[':cpu_or1knd_i5_min_sim_top:core:pipe:ctrl::monitor_exit'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top:core:pipe:ctrl::m_commit:monitor'] = 'true'
+
+options[':cpu_or1knd_i5_min_sim_top:core:pipe:dp::m_pc:monitor'] = 'true'
+options[':cpu_or1knd_i5_min_sim_top:core:pipe:dp::m_inst:monitor'] = 'true'
+
+monitor_thread_run = True
+
+def monitor_thread_func():
+
+    exit_code = 255
+
+    monitor_fifo_fd = os.open(monitor_fifo_filename, os.O_RDONLY | os.O_NONBLOCK)
+
+    cycles = 0
+    committed = 0
+    commit = '0'
+    pc = 'X'
+    inst = 'X'
+    r3_str = '[invalid]'
+    
+    try:
+        monitor_re = re.compile(r'"(?P<timestamp>[^"]*)" "(?P<instance>[^"]*)" (?P<code>\w+) "(?P<name>[^"]*)" "(?P<data>[^"]*)"')
+
+        buf = ''
+        lastcommit = ''
+        lastcommitcycles = 0
+        while monitor_thread_run:
+            
+            r, w, x = select.select([monitor_fifo_fd], [], [], 1)
+            if monitor_fifo_fd not in r:
+                continue
+
+            buf_tmp = os.read(monitor_fifo_fd, 1024)
+            if monitor_output_file is not None:
+                monitor_output_file.write(buf_tmp)
+
+            buf += buf_tmp
+
+            while True:
+                nlpos = buf.find('\n')
+                if nlpos < 0:
+                    break
+
+                l = buf[:nlpos]
+                buf = buf[nlpos+1:]
+
+                m = monitor_re.match(l)
+
+                if m is None:
+                    raise Exception('invalid monitor data received from simulator: "' + l + '"')
+
+                if m.group('code') == 'watch':
+                    if m.group('instance') == ':cpu_or1knd_i5_min_sim_top:core:pipe:ctrl:':
+                        if m.group('name') == 'm_commit':
+                            commit = m.group('data')
+                    elif m.group('instance') == ':cpu_or1knd_i5_min_sim_top:core:pipe:dp:':
+                        if m.group('name') == 'm_pc':
+                            pc = m.group('data')
+                        elif m.group('name') == 'm_inst':
+                            inst = m.group('data')
+                    elif m.group('instance') == ':cpu_or1knd_i5_min_sim_top:core:pipe:':
+                        if m.group('name') == 'regfile_we':
+                            regfile_we = m.group('data')
+                        if m.group('name') == 'regfile_waddr':
+                            regfile_waddr = m.group('data')
+                        if m.group('name') == 'regfile_wdata':
+                            regfile_wdata = m.group('data')
+                elif m.group('code') == 'cycle':
+                    if commit == '1':
+                        if regfile_we == '1':
+                            if regfile_waddr == '00011':
+                                if not regfile_wdata or any(c not in ['0', '1'] for c in regfile_wdata):
+                                    r3_str = '[invalid]'
+                                else:
+                                    r3_str = '{:08x}'.format(int(regfile_wdata, 2))
+
+                        if not pc or any(c not in ['0', '1'] for c in pc):
+                            pc_str = '[invalid]'
+                        else:
+                            pc_str = '{:08x}'.format(int(pc+"00", 2))
+                        if not inst or any(c not in ['0', '1'] for c in inst):
+                            inst_str = '[invalid]'
+                        else:
+                            inst_str = '{:08x}'.format(int(inst, 2))
+                        latency = cycles - lastcommitcycles
+                        lastcommitcycles = cycles
+                        lastcommit = 'cycle:{} latency:{:d} seq:{} pc:{} inst:{}'.format(cycles, latency, committed, pc_str, inst_str)
+                        if commit_trace_file is not None:
+                            commit_trace_file.write(lastcommit)
+                            commit_trace_file.write('\n')
+                        committed += 1
+                    elif commit != '0':
+                        sys.stderr.write('invalid commit value: {}\n'.format(commit))
+                    cycles += 1
+                elif m.group('code') == 'exit':
+                    print 'r3 value: {}'.format(r3_str)
+                    try:
+                        exit_code = int('0x{}'.format(r3_str))
+                    except:
+                        exit_code = 255
+
+    finally:
+        os.close(monitor_fifo_fd)
+        sys.stderr.write('last committed instruction: {}\n'.format(lastcommit))
+
+    return exit_code
+
+commit_trace_file = None
+monitor_output_file = None
+
+exit_code = 255
+try:
+
+    if exec_format == 'srec':
+        pass
+    elif exec_format == 'elf':
+        
+        objcopy_argv = ['objcopy', '-O', 'srec', getopt_args[0], tmp_srec_filename]
+        if verbose:
+            sys.stderr.write('executing: {}\n'.format(' '.join(objcopy_argv)))
+            
+        objcopy_process = subprocess.Popen(objcopy_argv)
+
+        objcopy_exit_code = objcopy_process.wait()
+        if objcopy_exit_code != 0:
+            raise Exception('objcopy process failed')
+
+    else:
+        raise Exception('invalid format: ' + exec_format)
+
+    if commit_trace_filename is None:
+        commit_trace_file = None
+    else:
+        sys.stderr.write('opening commit trace file {}\n'.format(commit_trace_filename))
+        if use_gzip:
+            commit_trace_file = gzip.GzipFile(commit_trace_filename, 'w')
+        else:
+            commit_trace_file = file(commit_trace_filename, 'w')
+
+    if monitor_output_filename is None:
+        monitor_output_file = None
+    else:
+        sys.stderr.write('opening monitor output file {}\n'.format(monitor_output_filename))
+        if use_gzip:
+            monitor_output_file = gzip.GzipFile(monitor_output_filename, 'w')
+        else:
+            monitor_output_file = file(monitor_output_filename, 'w')
+
+    os.mkfifo(monitor_fifo_filename)
+    monitor_thread = threading.Thread(target = monitor_thread_func)
+    try:
+        monitor_thread.setDaemon(True)
+        monitor_thread.start()
+
+        options_text = ''.join('{}={}\n'.format(k, options[k]) for k in sorted(options.iterkeys())) + '=\n'
+        sys.stderr.write('options:\n')
+        sys.stderr.write(options_text)
+        sys.stderr.flush()
+
+        if sim_tool == 'ghdl':
+            # for ghdl, just pipe the options into the file
+
+            if run_gui:
+                sys.stderr.write('warning: gui not supported for ghdl\n');
+
+            sim_process = subprocess.Popen([@sim_command@], stdin = subprocess.PIPE)
+
+            sim_process.communicate(options_text)
+            sim_process.wait()
+
+        elif sim_tool == 'vcs':
+            
+            # for vcs, write the options to a file and set a generic
+            # that points to the file
+            
+            options_filename = 'cpu_or1knd_i5_min_sim-options.{}'.format(os.getpid())
+            options_file = file(options_filename, 'w')
+            try:
+                options_file.write(options_text)
+                options_file.close()
+            
+                sim_argv = [@sim_command@, '-lca', '-gv', '/cpu_or1knd_i5_min_sim_top/options_filename="{}"'.format(options_filename)]
+                if run_gui:
+                    sim_argv.append('-gui')
+                sim_process = subprocess.Popen(sim_argv,
+                                               stdin = subprocess.PIPE,
+                                               stdout = sys.stdout,
+                                               stderr = sys.stderr)
+                sim_process.stdin.close()
+                sim_process.wait()
+
+            finally:
+                os.unlink(options_filename)
+                pass
+
+        else:
+            raise Exception('unknown simulator: ' + sim_tool)
+    finally:
+        monitor_thread_run = False
+        exit_code = monitor_thread.join()
+
+finally:
+    if commit_trace_file is not None:
+        commit_trace_file.close()
+    if monitor_output_file is not None:
+        monitor_output_file.close()
+    if tmp_srec_filename is not None and os.path.exists(tmp_srec_filename):
+        os.unlink(tmp_srec_filename)
+
+    if monitor_fifo_filename is not None and os.path.exists(monitor_fifo_filename):
+        os.unlink(monitor_fifo_filename)
+
+sys.exit(exit_code)

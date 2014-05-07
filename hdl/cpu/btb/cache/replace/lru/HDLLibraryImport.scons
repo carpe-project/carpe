@@ -1,0 +1,33 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+hdllibenv.HDLAnalyze(source = ['cpu_btb_cache_replace_lru_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_btb_cache_replace_lru_pkg'),
+                                 ],
+                     requires = [VHDLPackage('util.numeric_pkg'),
+                                 VHDLPackage('cpu_btb_cache_config_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_btb_cache_replace_lru.vhdl'],
+                     provides = [VHDLEntity('cpu_btb_cache_replace_lru'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_cache_replace_lru_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_btb_cache_replace_lru-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_btb_cache_replace_lru(rtl)'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_cache_config_pkg'),
+                                 VHDLArchitecture('mem.cache_replace_lru(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )

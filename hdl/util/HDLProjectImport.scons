@@ -1,0 +1,46 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('project')
+Import('kconfig')
+Import('hdlprojenv')
+
+hdllibenv = hdlprojenv.HDLLibraryEnvironment('util')
+
+hdllibenv.HDLAnalyze(source = ['logic_pkg.vhdl'],
+                     provides = [VHDLPackage('logic_pkg')],
+                     requires = [VHDLPackage('numeric_pkg')],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['numeric_pkg.vhdl'],
+                     provides = [VHDLPackage('numeric_pkg')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['types_pkg.vhdl'],
+                     provides = [VHDLPackage('types_pkg')],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['options_pkg.vhdl'],
+                     provides = [VHDLPackage('options_pkg')],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['io_pkg.vhdl'],
+                     provides = [VHDLPackage('io_pkg')],
+                     requires = [VHDLPackage('types_pkg')],
+                     standard = 'vhdl00',
+                     )
+
+if hdlprojenv.sim_tool.name == 'vcs':
+    hdllibenv.HDLAnalyze(source = ['names_pkg-vcs.vhdl'],
+                         provides = [VHDLPackage('names_pkg')],
+                         requires = [],
+                         standard = 'vhdl00',
+                         )
+else:
+    hdllibenv.HDLAnalyze(source = ['names_pkg.vhdl'],
+                         provides = [VHDLPackage('names_pkg')],
+                         requires = [],
+                         standard = 'vhdl00',
+                         )

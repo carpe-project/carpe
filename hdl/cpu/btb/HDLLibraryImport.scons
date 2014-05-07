@@ -1,0 +1,102 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+cpu_btb_impl = kconfig['proj.%s.hdl.lib.%s.btb.impl' % (project, hdllibrary)]
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_btb_pkg_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'library ieee;',
+    'use ieee.std_logic_1164.all;',
+    '',
+    'use work.cpu_btb_@cpu_btb_impl@_pkg.all;',
+    '',
+    'package cpu_btb_pkg is',
+    '',
+    '  constant cpu_btb_state_bits : natural := cpu_btb_@cpu_btb_impl@_state_bits;',
+    '  subtype cpu_btb_state_type is cpu_btb_@cpu_btb_impl@_state_type;',
+    '',
+    '  subtype cpu_btb_ctrl_in_type is cpu_btb_@cpu_btb_impl@_ctrl_in_type;',
+    '  subtype cpu_btb_dp_in_type is cpu_btb_@cpu_btb_impl@_dp_in_type;',
+    '  subtype cpu_btb_ctrl_out_type is cpu_btb_@cpu_btb_impl@_ctrl_out_type;',
+    '  subtype cpu_btb_dp_out_type is cpu_btb_@cpu_btb_impl@_dp_out_type;',
+    ''
+    'end package;',
+    '',
+    ]
+
+cpu_btb_pkg_subst_dict = dict()
+cpu_btb_pkg_subst_dict['@cpu_btb_impl@'] = cpu_btb_impl
+cpu_btb_pkg = \
+    textfile_env.Textfile(target     = 'cpu_btb_pkg.vhdl',
+                          source     = cpu_btb_pkg_source,
+                          SUBST_DICT = cpu_btb_pkg_subst_dict
+                          )
+
+cpu_btb_rtl_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'architecture rtl of cpu_btb is',
+    'begin',
+    '',
+    '  @cpu_btb_impl@ : entity work.cpu_btb_@cpu_btb_impl@(rtl)',
+    '    port map (',
+    '      clk                             => clk,',
+    '      rstn                            => rstn,',
+    '      cpu_btb_@cpu_btb_impl@_ctrl_in  => cpu_btb_ctrl_in,',
+    '      cpu_btb_@cpu_btb_impl@_dp_in    => cpu_btb_dp_in,',
+    '      cpu_btb_@cpu_btb_impl@_ctrl_out => cpu_btb_ctrl_out,',
+    '      cpu_btb_@cpu_btb_impl@_dp_out   => cpu_btb_dp_out',
+    '      );',
+    '',
+    'end;',
+    '',
+    ]
+cpu_btb_rtl_subst_dict = dict()
+cpu_btb_rtl_subst_dict['@cpu_btb_impl@'] = cpu_btb_impl
+cpu_btb_rtl = \
+    textfile_env.Textfile(target     = 'cpu_btb-rtl.vhdl',
+                          source     = cpu_btb_rtl_source,
+                          SUBST_DICT = cpu_btb_rtl_subst_dict
+                          )
+
+hdllibenv.HDLAnalyze(source = cpu_btb_pkg,
+                     provides = [VHDLPackage('cpu_btb_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_%s_pkg' % cpu_btb_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_btb.vhdl'],
+                     provides = [VHDLEntity('cpu_btb'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = cpu_btb_rtl,
+                     provides = [VHDLArchitecture('cpu_btb(rtl)'),
+                                 ],
+                     requires = [VHDLArchitecture('cpu_btb_%s(rtl)' % cpu_btb_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+SConscript('#hdl/cpu/btb/%s/HDLLibraryImport.scons' % cpu_btb_impl,
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = cpu_btb_impl,
+           duplicate = 0,
+           )

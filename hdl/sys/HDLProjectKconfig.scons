@@ -1,0 +1,35 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+
+kconfig.Config('proj.%s.hdl.lib.sys.paddr_bits' % project,
+               prompt = '"Physical Address Bits"',
+               type = 'int',
+               default = 36,
+               )
+
+log2_bus_bytes_values = [2, 3, 4, 5]
+log2_bus_bytes_valuelist = kconfig.ValueList('proj.%s.hdl.lib.sys.log2_bus_bytes' % project,
+                                             prompt = '"System data bus width"',
+                                             type = 'int',
+                                             )
+for log2_bus_bytes in log2_bus_bytes_values:
+    bus_bits = 8 * (2**log2_bus_bytes)
+    log2_bus_bytes_valuelist.Value('proj.%s.hdl.lib.sys.log2_bus_bytes.%d' % (project, log2_bus_bytes),
+                                   prompt = '"%d bits"' % bus_bits,
+                                   value = log2_bus_bytes
+                                   )
+
+log2_max_burst_cycles_values = [0, 1, 2, 3, 4]
+log2_max_burst_cycles_choice = kconfig.ValueList('proj.%s.hdl.lib.sys.log2_max_burst_cycles' % project,
+                                                 prompt = '"Maximum system bus burst cycles"',
+                                                 type = 'int',
+                                                 )
+for log2_max_burst_cycles in log2_max_burst_cycles_values:
+    max_burst_cycles = 2**log2_max_burst_cycles
+    log2_max_burst_cycles_choice.Value('proj.%s.hdl.lib.sys.log2_max_burst_cycles.%d' % (project, log2_max_burst_cycles),
+                                       prompt = '"No bursts"' if max_burst_cycles == 1 else '"%d cycles"' % max_burst_cycles,
+                                       value = log2_max_burst_cycles
+                                       )

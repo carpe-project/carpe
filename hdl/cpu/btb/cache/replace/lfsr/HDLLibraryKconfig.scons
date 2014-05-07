@@ -1,0 +1,11 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+reg_bits = kconfig.Config('proj.%s.hdl.lib.%s.btb.cache.replace.lfsr.reg_bits' % (project, hdllibrary),
+                          prompt = '"Shift-Register Bits"',
+                          type = 'int',
+                          range = '2 32')

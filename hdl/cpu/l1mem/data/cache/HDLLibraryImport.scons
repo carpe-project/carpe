@@ -1,0 +1,135 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_l1mem_data_cache_config_pkg_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'library ieee;',
+    'use ieee.std_logic_1164.all;',
+    '',
+    'package cpu_l1mem_data_cache_config_pkg is',
+    ''
+    '  constant cpu_l1mem_data_cache_index_bits  : natural := @cpu_l1mem_data_cache_index_bits@;',
+    '  constant cpu_l1mem_data_cache_offset_bits : natural := @cpu_l1mem_data_cache_offset_bits@;',
+    '  constant cpu_l1mem_data_cache_log2_assoc  : natural := @cpu_l1mem_data_cache_log2_assoc@;',
+    '  constant cpu_l1mem_data_cache_stb_entries : natural := @cpu_l1mem_data_cache_stb_entries@;',
+    ''
+    'end package;',
+    '',
+    ]
+cpu_l1mem_data_cache_config_pkg_subst_dict = dict()
+cpu_l1mem_data_cache_config_pkg_subst_dict['@cpu_l1mem_data_cache_index_bits@'] = \
+    kconfig['proj.%s.hdl.lib.%s.l1mem.data.cache.index_bits' % (project, hdllibrary)]
+cpu_l1mem_data_cache_config_pkg_subst_dict['@cpu_l1mem_data_cache_offset_bits@'] = \
+    kconfig['proj.%s.hdl.lib.%s.l1mem.data.cache.offset_bits' % (project, hdllibrary)]
+cpu_l1mem_data_cache_config_pkg_subst_dict['@cpu_l1mem_data_cache_log2_assoc@'] = \
+    kconfig['proj.%s.hdl.lib.%s.l1mem.data.cache.log2_assoc' % (project, hdllibrary)]
+cpu_l1mem_data_cache_config_pkg_subst_dict['@cpu_l1mem_data_cache_stb_entries@'] = \
+    kconfig['proj.%s.hdl.lib.%s.l1mem.data.cache.stb_entries' % (project, hdllibrary)]
+cpu_l1mem_data_cache_config_pkg = \
+    textfile_env.Textfile(target     = 'cpu_l1mem_data_cache_config_pkg.vhdl',
+                          source     = cpu_l1mem_data_cache_config_pkg_source,
+                          SUBST_DICT = cpu_l1mem_data_cache_config_pkg_subst_dict
+                          )
+
+hdllibenv.HDLAnalyze(source = cpu_l1mem_data_cache_config_pkg,
+                     provides = [VHDLPackage('cpu_l1mem_data_cache_config_pkg'),
+                                 ],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_data_cache_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_l1mem_data_cache_pkg')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_config_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_types_pkg'),
+                                 VHDLPackage('cpu_types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_data_cache.vhdl'],
+                     provides = [VHDLEntity('cpu_l1mem_data_cache')],
+                     requires = [VHDLPackage('sys.sys_pkg'),
+                                 VHDLPackage('cpu_mmu_data_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_data_cache-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_l1mem_data_cache(rtl)')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('util.logic_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_config_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_replace_pkg'),
+                                 VHDLArchitecture('cpu_l1mem_data_cache_ctrl(rtl)'),
+                                 VHDLArchitecture('cpu_l1mem_data_cache_dp(rtl)'),
+                                 VHDLArchitecture('cpu_l1mem_data_cache_replace(rtl)'),
+                                 VHDLArchitecture('mem.cache_core_1rw(rtl)'),
+                                 VHDLArchitecture('tech.mux_1hot(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_data_cache_ctrl.vhdl'],
+                     provides = [VHDLEntity('cpu_l1mem_data_cache_ctrl')],
+                     requires = [VHDLPackage('sys.sys_pkg'),
+                                 VHDLPackage('cpu_mmu_data_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_replace_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_data_cache_ctrl-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_l1mem_data_cache_ctrl(rtl)')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('util.logic_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_types_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_config_pkg'),
+                                 VHDLPackage('cpu_types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_data_cache_dp.vhdl'],
+                     provides = [VHDLEntity('cpu_l1mem_data_cache_dp')],
+                     requires = [VHDLPackage('sys.sys_pkg'),
+                                 VHDLPackage('cpu_mmu_data_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_replace_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_data_cache_dp-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_l1mem_data_cache_dp(rtl)')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('util.logic_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_config_pkg'),
+                                 VHDLPackage('cpu_types_pkg'),
+                                 VHDLArchitecture('tech.mux_1hot(rtl)'),
+                                 VHDLArchitecture('tech.decoder(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+SConscript('#hdl/cpu/l1mem/data/cache/replace/HDLLibraryImport.scons',
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = 'replace',
+           duplicate = 0,
+           )

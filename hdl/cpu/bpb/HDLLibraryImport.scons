@@ -1,0 +1,107 @@
+# -*- python -*-
+
+import SCons.Errors
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+cpu_bpb_impl = kconfig['proj.%s.hdl.lib.%s.bpb.impl' % (project, hdllibrary)]
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_bpb_pkg_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'library ieee;',
+    'use ieee.std_logic_1164.all;',
+    '',
+    'use work.cpu_bpb_@cpu_bpb_impl@_pkg.all;',
+    '',
+    'package cpu_bpb_pkg is',
+    '',
+    '  constant cpu_bpb_state_bits : natural := cpu_bpb_@cpu_bpb_impl@_state_bits;',
+    '  subtype cpu_bpb_state_type is cpu_bpb_@cpu_bpb_impl@_state_type;',
+    '  ',
+    '  subtype cpu_bpb_ctrl_in_type  is cpu_bpb_@cpu_bpb_impl@_ctrl_in_type;',
+    '  subtype cpu_bpb_dp_in_type    is cpu_bpb_@cpu_bpb_impl@_dp_in_type;',
+    '  subtype cpu_bpb_ctrl_out_type is cpu_bpb_@cpu_bpb_impl@_ctrl_out_type;',
+    '  subtype cpu_bpb_dp_out_type   is cpu_bpb_@cpu_bpb_impl@_dp_out_type;',
+    ''
+    'end package;',
+    '',
+    ]
+cpu_bpb_pkg_subst_dict = dict()
+cpu_bpb_pkg_subst_dict['@cpu_bpb_impl@'] = cpu_bpb_impl
+cpu_bpb_pkg = \
+    textfile_env.Textfile(target     = 'cpu_bpb_pkg.vhdl',
+                          source     = cpu_bpb_pkg_source,
+                          SUBST_DICT = cpu_bpb_pkg_subst_dict
+                          )
+
+cpu_bpb_rtl_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'use work.cpu_bpb_@cpu_bpb_impl@_pkg.all;',
+    'use work.cpu_bpb_pkg.all;',
+    '',
+    'architecture rtl of cpu_bpb is',
+    'begin',
+    '',
+    '  @cpu_bpb_impl@ : entity work.cpu_bpb_@cpu_bpb_impl@(rtl)',
+    '    port map (',
+    '      clk                             => clk,',
+    '      rstn                            => rstn,',
+    '      cpu_bpb_@cpu_bpb_impl@_ctrl_in  => cpu_bpb_ctrl_in,',
+    '      cpu_bpb_@cpu_bpb_impl@_dp_in    => cpu_bpb_dp_in,',
+    '      cpu_bpb_@cpu_bpb_impl@_ctrl_out => cpu_bpb_ctrl_out,',
+    '      cpu_bpb_@cpu_bpb_impl@_dp_out   => cpu_bpb_dp_out',
+    '      );',
+    '',
+    'end;',
+    '',
+    ]
+cpu_bpb_rtl_subst_dict = dict()
+cpu_bpb_rtl_subst_dict['@cpu_bpb_impl@'] = cpu_bpb_impl
+cpu_bpb_rtl = \
+    textfile_env.Textfile(target     = 'cpu_bpb-rtl.vhdl',
+                          source     = cpu_bpb_rtl_source,
+                          SUBST_DICT = cpu_bpb_rtl_subst_dict
+                          )
+
+hdllibenv.HDLAnalyze(source = cpu_bpb_pkg,
+                     provides = [VHDLPackage('cpu_bpb_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_bpb_%s_pkg' % cpu_bpb_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_bpb.vhdl'],
+                     provides = [VHDLEntity('cpu_bpb'),
+                                 ],
+                     requires = [VHDLPackage('cpu_bpb_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = cpu_bpb_rtl,
+                     provides = [VHDLArchitecture('cpu_bpb(rtl)'),
+                                 ],
+                     requires = [VHDLPackage('cpu_bpb_%s_pkg' % cpu_bpb_impl),
+                                 VHDLPackage('cpu_bpb_pkg'),
+                                 VHDLArchitecture('cpu_bpb_%s(rtl)' % cpu_bpb_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+SConscript('#hdl/cpu/bpb/%s/HDLLibraryImport.scons' % cpu_bpb_impl,
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = cpu_bpb_impl,
+           duplicate = 0,
+           )

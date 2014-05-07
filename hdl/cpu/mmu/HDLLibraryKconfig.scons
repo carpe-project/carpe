@@ -1,0 +1,25 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+SConscript('#hdl/cpu/mmu/inst/HDLLibraryKconfig.scons',
+           exports = {'env'     : env,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variantdir = 'inst',
+           duplicate = 0,
+           )
+SConscript('#hdl/cpu/mmu/data/HDLLibraryKconfig.scons',
+           exports = {'env'     : env,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variantdir = 'data',
+           duplicate = 0,
+           )

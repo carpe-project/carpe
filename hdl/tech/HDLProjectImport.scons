@@ -1,0 +1,139 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('project')
+Import('kconfig')
+Import('hdlprojenv')
+
+tech_impl = kconfig['proj.%s.hdl.lib.tech.impl' % project]
+
+hdllibenv = hdlprojenv.HDLLibraryEnvironment('tech')
+
+hdllibenv.HDLAnalyze(source = ['syncram_1rw.vhdl'],
+                     provides = [VHDLEntity('syncram_1rw')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_1r1w.vhdl'],
+                     provides = [VHDLEntity('syncram_1r1w')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_2r1w.vhdl'],
+                     provides = [VHDLEntity('syncram_2r1w')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_banked_1rw.vhdl'],
+                     provides = [VHDLEntity('syncram_banked_1rw')],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['syncram_banked_1r1w.vhdl'],
+                     provides = [VHDLEntity('syncram_banked_1r1w')],
+                     requires = [VHDLPackage('util.types_pkg')],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['add.vhdl'],
+                     provides = [VHDLEntity('add')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['addsub.vhdl'],
+                     provides = [VHDLEntity('addsub')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul.vhdl'],
+                     provides = [VHDLEntity('mul')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul_pipe.vhdl'],
+                     provides = [VHDLEntity('mul_pipe')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul_seq.vhdl'],
+                     provides = [VHDLEntity('mul_seq')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mul_trunc_seq.vhdl'],
+                     provides = [VHDLEntity('mul_trunc_seq')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['div.vhdl'],
+                     provides = [VHDLEntity('div')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['div_pipe.vhdl'],
+                     provides = [VHDLEntity('div_pipe')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['div_seq.vhdl'],
+                     provides = [VHDLEntity('div_seq')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['madd.vhdl'],
+                     provides = [VHDLEntity('madd')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['madd_pipe.vhdl'],
+                     provides = [VHDLEntity('madd_pipe')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['madd_seq.vhdl'],
+                     provides = [VHDLEntity('madd_seq')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['shifter.vhdl'],
+                     provides = [VHDLEntity('shifter')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['mux_1hot.vhdl'],
+                     provides = [VHDLEntity('mux_1hot')],
+                     requires = [VHDLPackage('util.types_pkg')],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['encoder.vhdl'],
+                     provides = [VHDLEntity('encoder')],
+                     requires = [VHDLPackage('util.numeric_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['decoder.vhdl'],
+                     provides = [VHDLEntity('decoder')],
+                     requires = [VHDLPackage('util.numeric_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['prioritizer.vhdl'],
+                     provides = [VHDLEntity('prioritizer')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['lfsr.vhdl'],
+                     provides = [VHDLEntity('lfsr')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+SConscript('#hdl/tech/%s/HDLLibraryImport.scons' % tech_impl,
+           exports = {'project'    : project,
+                      'kconfig'    : kconfig,
+                      'hdllibenv'  : hdllibenv,
+                      },
+           variant_dir = tech_impl,
+           duplicate = 0,
+           )

@@ -1,0 +1,32 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+hdllibenv.HDLAnalyze(source = ['cpu_btb_miss_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_btb_miss_pkg'),
+                                 ],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('cpu_types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_btb_miss.vhdl'],
+                     provides = [VHDLEntity('cpu_btb_miss'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_miss_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_btb_miss-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_btb_miss(rtl)'),
+                                 ],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )

@@ -1,0 +1,14 @@
+# -*- python -*-
+
+import SCons.Errors
+import SCons.Defaults
+import SCons.Util
+import os
+
+if not os.path.exists('build'):
+    Execute(Action(lambda target, source, env: SCons.Defaults.mkdir_func('build'), 'MKDIR build'))
+SConsignFile('build/.sconsign')
+
+env = Environment(tools = [])
+
+SConscript('Build.scons', variant_dir = 'build', exports = {'env': env}, duplicate = False)

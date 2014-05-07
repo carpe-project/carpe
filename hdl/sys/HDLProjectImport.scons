@@ -1,0 +1,77 @@
+# -*- python -*-
+
+import math
+from SConsHDL import *
+
+Import('project')
+Import('kconfig')
+Import('hdlprojenv')
+
+hdllibenv = hdlprojenv.HDLLibraryEnvironment('sys')
+
+textfile_env = Environment(tools = ['textfile'])
+sys_config_pkg_source = []
+sys_config_pkg_source.extend([
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'package sys_config_pkg is',
+    '',
+    '  constant sys_paddr_bits : natural := @sys_paddr_bits@;',
+    '  constant sys_log2_bus_bytes : natural := @sys_log2_bus_bytes@;',
+    '  constant sys_log2_max_burst_cycles : natural := @sys_log2_max_burst_cycles@;',
+    ])
+sys_config_pkg_source.extend([
+    '',
+    'end package;',
+    ])
+sys_config_pkg_subst_dict = dict()
+sys_config_pkg_subst_dict['@sys_paddr_bits@'] = kconfig['proj.%s.hdl.lib.sys.paddr_bits' % project]
+for log2_bus_bytes in [2, 3, 4]:
+    if kconfig['proj.%s.hdl.lib.sys.log2_bus_bytes.%d' % (project, log2_bus_bytes)]:
+        sys_config_pkg_subst_dict['@sys_log2_bus_bytes@'] = log2_bus_bytes
+        break
+for log2_max_burst_cycles in [0, 1, 2, 3, 4]:
+    if kconfig['proj.%s.hdl.lib.sys.log2_max_burst_cycles.%d' % (project, log2_max_burst_cycles)]:
+        sys_config_pkg_subst_dict['@sys_log2_max_burst_cycles@'] = log2_max_burst_cycles
+        break
+
+sys_config_pkg = \
+    textfile_env.Textfile(target = 'sys_config_pkg.vhdl',
+                          source = sys_config_pkg_source,
+                          SUBST_DICT = sys_config_pkg_subst_dict,
+                          )
+
+hdllibenv.HDLAnalyze(source = sys_config_pkg,
+                     provides = [VHDLPackage('sys_config_pkg')
+                                 ],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = 'sys_pkg.vhdl',
+                     provides = [VHDLPackage('sys_pkg')
+                                 ],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('util.numeric_pkg'),
+                                 VHDLPackage('sys_config_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = 'sys_master_arb.vhdl',
+                     provides = [VHDLEntity('sys_master_arb')
+                                 ],
+                     requires = [VHDLPackage('sys_pkg'),
+                                 VHDLArchitecture('tech.mux_1hot(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = 'sys_master_arb-rtl.vhdl',
+                     provides = [VHDLArchitecture('sys_master_arb(rtl)')
+                                 ],
+                     requires = [VHDLPackage('util.logic_pkg'),
+                                 VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('sys.sys_pkg'),
+                                 VHDLPackage('sys.sys_config_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )

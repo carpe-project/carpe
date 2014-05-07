@@ -1,0 +1,31 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+index_bits_values = xrange(21)
+index_bits_valuelist = \
+    kconfig.ValueList('proj.%s.hdl.lib.%s.bpb.bimod.index_bits' % (project, hdllibrary),
+                      prompt = '"Number of Entries"',
+                      type = 'int',
+                      )
+for index_bits in index_bits_values:
+    num_sets = 2**index_bits
+    index_bits_valuelist.Value('proj.%s.hdl.lib.%s.bpb.bimod.index_bits.%d' % (project, hdllibrary, index_bits),
+                               prompt = '"%d Entries"' % num_sets if num_sets != 1 else '"1 Entry"',
+                               value = index_bits,
+                               )
+
+state_bits_values = xrange(1, 5)
+state_bits_valuelist = \
+    kconfig.ValueList('proj.%s.hdl.lib.%s.bpb.bimod.counter_bits' % (project, hdllibrary),
+                      prompt = '"Counter Bits"',
+                      type = 'int',
+                      )
+for state_bits in state_bits_values:
+    state_bits_valuelist.Value('proj.%s.hdl.lib.%s.bpb.bimod.counter_bits.%d' % (project, hdllibrary, state_bits),
+                               prompt = '"%d Bits"' % state_bits if state_bits != 1 else '"1 Bit"',
+                               value = state_bits,
+                               )

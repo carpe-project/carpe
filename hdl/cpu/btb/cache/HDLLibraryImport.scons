@@ -1,0 +1,83 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_btb_cache_config_pkg_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'library ieee;',
+    'use ieee.std_logic_1164.all;',
+    '',
+    'package cpu_btb_cache_config_pkg is',
+    ''
+    '  constant cpu_btb_cache_index_bits : natural := @cpu_btb_cache_index_bits@;',
+    '  constant cpu_btb_cache_log2_assoc : natural := @cpu_btb_cache_log2_assoc@;',
+    ''
+    'end package;',
+    '',
+    ]
+cpu_btb_cache_config_pkg_subst_dict = dict()
+cpu_btb_cache_config_pkg_subst_dict['@cpu_btb_cache_index_bits@'] = \
+    kconfig['proj.%s.hdl.lib.%s.btb.cache.index_bits' % (project, hdllibrary)]
+cpu_btb_cache_config_pkg_subst_dict['@cpu_btb_cache_log2_assoc@'] = \
+    kconfig['proj.%s.hdl.lib.%s.btb.cache.log2_assoc' % (project, hdllibrary)]
+cpu_btb_cache_config_pkg = \
+    textfile_env.Textfile(target     = 'cpu_btb_cache_config_pkg.vhdl',
+                          source     = cpu_btb_cache_config_pkg_source,
+                          SUBST_DICT = cpu_btb_cache_config_pkg_subst_dict
+                          )
+
+hdllibenv.HDLAnalyze(source = cpu_btb_cache_config_pkg,
+                     provides = [VHDLPackage('cpu_btb_cache_config_pkg'),
+                                 ],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_btb_cache_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_btb_cache_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_cache_config_pkg'),
+                                 VHDLPackage('cpu_btb_cache_replace_pkg'),
+                                 VHDLPackage('cpu_types_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_btb_cache.vhdl'],
+                     provides = [VHDLEntity('cpu_btb_cache'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_cache_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_btb_cache-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_btb_cache(rtl)'),
+                                 ],
+                     requires = [VHDLPackage('cpu_btb_cache_pkg'),
+                                 VHDLPackage('cpu_btb_cache_replace_pkg'),
+                                 VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('util.logic_pkg'),
+                                 VHDLPackage('util.numeric_pkg'),
+                                 VHDLArchitecture('cpu_btb_cache_replace(rtl)'),
+                                 VHDLArchitecture('mem.cache_core_1r1w(rtl)'),
+                                 VHDLArchitecture('tech.mux_1hot(rtl)'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+SConscript('#hdl/cpu/btb/cache/replace/HDLLibraryImport.scons',
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = 'replace',
+           duplicate = 0,
+           )

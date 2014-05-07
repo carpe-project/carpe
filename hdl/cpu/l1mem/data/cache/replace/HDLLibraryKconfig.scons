@@ -1,0 +1,41 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+replace_impls = [
+    ('none', 'None',                'proj.%s.hdl.lib.%s.l1mem.data.cache.log2_assoc.0' % (project, hdllibrary),  False),
+    ('lru',  'Least Recently Used', '!proj.%s.hdl.lib.%s.l1mem.data.cache.log2_assoc.0' % (project, hdllibrary), False),
+#    ('lfsr', 'Pseudo-Random',       '!proj.%s.hdl.lib.%s.l1mem.data.cache.log2_assoc.0' % (project, hdllibrary), True),
+    ]
+replace_choice = kconfig.Choice(prompt = '"Replacement Algorithm"',
+                                default = ['proj.%s.hdl.lib.%s.l1mem.data.cache.replace.impl.none if proj.%s.hdl.lib.%s.l1mem.data.cache.log2_assoc.0' % (project, hdllibrary, project, hdllibrary),
+                                           'proj.%s.hdl.lib.%s.l1mem.data.cache.replace.impl.lru  if !proj.%s.hdl.lib.%s.l1mem.data.cache.log2_assoc.0' % (project, hdllibrary, project, hdllibrary),
+                                           ]
+                                )
+
+for symbol, prompt, prompt_cond, has_config in replace_impls:
+    replace_choice.Config('proj.%s.hdl.lib.%s.l1mem.data.cache.replace.impl.%s' % (project, hdllibrary, symbol),
+                          prompt = '"%s" if %s' % (prompt, prompt_cond),
+                          )
+    if has_config:
+        replace_menu = kconfig.Menu('%s Replacement Configuration' % prompt,
+                                    depends_on = 'proj.%s.hdl.lib.%s.l1mem.data.cache.replace.impl.%s' % (project, hdllibrary, symbol),
+                                    )
+        SConscript('%s/HDLLibraryKconfig.scons' % symbol,
+                   exports = {'env'     : env,
+                              'kconfig'    : replace_menu,
+                              'project'    : project,
+                              'hdllibrary' : hdllibrary,
+                              },
+                   variantdir = symbol,
+                   duplicate = 0,
+                   )
+
+kconfig.Config('proj.%s.hdl.lib.%s.l1mem.data.cache.replace.impl' % (project, hdllibrary),
+               type = 'string',
+               default = ['"%s" if proj.%s.hdl.lib.%s.l1mem.data.cache.replace.impl.%s' % (replace_impl[0], project, hdllibrary, replace_impl[0])
+                          for replace_impl in replace_impls],
+               )

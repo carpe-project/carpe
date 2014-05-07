@@ -1,0 +1,23 @@
+# -*- python -*-
+
+import os
+
+Import('env')
+Import('kconfig')
+
+projtopdir = Dir('#proj').abspath
+proj = kconfig.get('proj', None)
+if proj is not None:
+      projdir = os.path.join(projtopdir, proj)
+      if kconfig.get('config', None):
+            variant_dir = '%s-%s' % (proj, kconfig['config'])
+      else:
+            variant_dir = proj
+            SConscript(os.path.join(projdir, 'ProjectBuild.scons'),
+                       exports = {'env'     : env,
+                                  'kconfig' : kconfig,
+                                  'project' : proj,
+                                  },
+                       variant_dir = variant_dir,
+                       duplicate = 0,
+                       )

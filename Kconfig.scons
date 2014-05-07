@@ -1,0 +1,137 @@
+# -*- python -*-
+
+import SCons.Script
+import SCons.Util
+import SCons.SConsign
+
+import SConsKconfig
+import SConsHDL
+
+import os.path
+import pipes
+
+Import('env')
+
+kconfig_template  = env.File('Kconfig')
+kconfig_dotconfig = File(env['CONFIG'])
+
+kconfig = SConsKconfig.Kconfig(template = kconfig_template,
+                               dotconfig = kconfig_dotconfig,
+                               title = 'CARPE Configuration',
+                               )
+
+kconfig.Config('config',
+               prompt = '"Configuration name"',
+               type   = 'string',
+               )
+
+hdl_menu = kconfig.Menu('HDL Options')
+SConsHDL.Kconfig(hdl_menu, env)
+
+# project kconfigs
+proj_choice = kconfig.Choice(prompt = '"Project Selection"',
+                             type = 'bool')
+
+projs = list()
+projtopdir = Dir('#proj').abspath
+for entry in os.listdir(projtopdir):
+      projdir = os.path.join(projtopdir, entry)
+      if os.path.exists(projdir) and os.path.isdir(projdir) and os.path.exists(os.path.join(projdir, 'ProjectKconfig.scons')):
+          projs.append(entry)
+          proj_choice.Config('proj.%s' % entry,
+                             prompt = '"%s"' % entry,
+                             )
+          proj_menu = kconfig.Menu('%s Project Options' % entry,
+                                   depends_on = 'proj.%s' % entry,
+                                   )
+          SConscript(os.path.join(projdir, 'ProjectKconfig.scons'),
+                     exports = {'env': env,
+                                'kconfig': proj_menu,
+                                'project': entry
+                                },
+                     variant_dir = 'kconfig/proj/%s' % entry,
+                     duplicate = 0,
+                     )
+kconfig.Config('proj',
+               type = 'string',
+               default = ['"%s" if proj.%s' % (p, p) for p in projs],
+               )
+
+# build frontend
+SConscript('#util/kconfig/Build.scons',
+           variant_dir = 'util/kconfig',
+           duplicate = 0,
+           exports = {'env': env.Clone()},
+           )
+kconfig_frontend  = env.File('util/kconfig/frontends/$KCONFIG_FRONTEND/$KCONFIG_FRONTEND')
+
+kconfig_env = env.Clone(tools = ['textfile'],
+                        KCONFIG_DOTCONFIG = kconfig_dotconfig,
+                        KCONFIG_TEMPLATE = kconfig_template,
+                        KCONFIG_FRONTEND = kconfig_frontend,
+                        )
+kconfig_template_source = kconfig.Template()
+kconfig_template_nodes = kconfig_env.Textfile(target = [kconfig_template],
+                                              source = [Literal(s) for s in kconfig_template_source],
+                                              )
+
+config_alias = kconfig_env.Alias('config', [],
+                                 'KCONFIG_CONFIG=$KCONFIG_DOTCONFIG $KCONFIG_FRONTEND $KCONFIG_TEMPLATE')
+AlwaysBuild(config_alias)
+env.Depends(config_alias, [kconfig_frontend, kconfig_template_nodes])
+kconfig_env.SideEffect(kconfig_dotconfig, config_alias)
+
+do_config = False
+if 'config' in SCons.Script.COMMAND_LINE_TARGETS:
+      do_config = True
+elif not os.path.exists(kconfig_dotconfig.abspath):
+      SCons.Util.display('Config file "%s" not found, starting kconfig...' % kconfig_dotconfig.path)
+      do_config = True
+
+config_failed = False
+if do_config:
+      # evil scons hackery begins
+
+      # this code makes sure the frontend is immediately compiled
+      # (when needed) and then executed
+
+      # this lets us read the .config file before the rest of the
+      # scons files are read
+
+      if 'config' not in SCons.Script.BUILD_TARGETS:
+            SCons.Script.BUILD_TARGETS.insert(0, 'config')
+
+      FS = SCons.Node.FS.get_default_fs()
+
+      old_fs_dir = FS.getcwd()
+      old_os_dir = os.getcwd()
+      FS.chdir(FS.Top, change_os_dir=1)
+
+      nodes = list()
+      nodes.extend(config_alias)
+
+      try:
+            tm = SCons.Taskmaster.Taskmaster(nodes)
+            jobs = SCons.Job.Jobs(1, tm)
+            jobs.run()
+            for n in nodes:
+                  state = n.get_state()
+                  if (state != SCons.Node.executed and
+                      state != SCons.Node.up_to_date):
+                        config_failed = True
+      finally:
+            os.chdir(old_os_dir)
+            FS.chdir(old_fs_dir, change_os_dir=0)
+
+      # end evil scons hackery
+
+      if not config_failed:
+            SCons.Util.display('Now run scons again to build!')
+
+      SCons.SConsign.write()
+      SCons.Script.Exit(config_failed)
+
+# parse .config file
+config = kconfig.Parse()
+
+Return('config')

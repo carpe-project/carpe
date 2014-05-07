@@ -1,0 +1,44 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+index_bits_values = xrange(21)
+index_bits_valuelist = \
+    kconfig.ValueList('proj.%s.hdl.lib.%s.btb.cache.index_bits' % (project, hdllibrary),
+                      prompt = '"Number of Sets"',
+                      type = 'int',
+                      )
+for index_bits in index_bits_values:
+    num_sets = 2**index_bits
+    index_bits_valuelist.Value('proj.%s.hdl.lib.%s.btb.cache.index_bits.%d' % (project, hdllibrary, index_bits),
+                               prompt = '"%d Sets"' % num_sets if num_sets != 1 else '"1 Set"',
+                               value = index_bits,
+                               )
+
+log2_assoc_values = xrange(6)
+log2_assoc_valuelist = kconfig.ValueList('proj.%s.hdl.lib.%s.btb.cache.log2_assoc' % (project, hdllibrary),
+                                         prompt = '"Associativity"',
+                                         type = 'int',
+                                         )
+for log2_assoc in log2_assoc_values:
+    assoc = 2**log2_assoc
+    log2_assoc_valuelist.Value('proj.%s.hdl.lib.%s.btb.cache.log2_assoc.%d' % (project, hdllibrary, log2_assoc),
+                               prompt = '"%d-Way"' % assoc if assoc != 1 else '"Direct Mapped"',
+                               value = log2_assoc,
+                               )
+
+replace_menu = kconfig.Menu('Replacement Algorithm Options',
+                            #visible_if = '!proj.%s.hdl.lib.%s.btb.cache.log2_assoc.0' % (project, hdllibrary),
+                            )
+SConscript('#hdl/cpu/btb/cache/replace/HDLLibraryKconfig.scons',
+           exports = {'env'     : env,
+                      'kconfig'   : replace_menu,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variantdir = 'replace',
+           duplicate = 0,
+           )

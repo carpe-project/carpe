@@ -1,0 +1,88 @@
+# -*- python -*-
+
+Import('env')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+multiplier_choice = kconfig.Choice(prompt = '"Multiplier Selection"')
+
+multiplier_choice.Config('proj.%s.hdl.lib.%s.or1knd.i5.madd_enable' % (project, hdllibrary),
+                         prompt = '"Enable Multiply/Add"',
+                         )
+multiplier_choice.Config('proj.%s.hdl.lib.%s.or1knd.i5.mul_enable' % (project, hdllibrary),
+                         prompt = '"Enable Multiply Only"',
+                         )
+
+kconfig.Config('proj.%s.hdl.lib.%s.or1knd.i5.madd_latency' % (project, hdllibrary),
+               prompt = '"Multiply/Add Latency (cycles)" if proj.%s.hdl.lib.%s.or1knd.i5.madd_enable' % (project, hdllibrary),
+               type = 'int',
+               default = '"4"',
+               )
+kconfig.Config('proj.%s.hdl.lib.%s.or1knd.i5.mul_latency' % (project, hdllibrary),
+               prompt = '"Multiply Latency (cycles)" if proj.%s.hdl.lib.%s.or1knd.i5.mul_enable' % (project, hdllibrary),
+               type = 'int',
+               default = '"3"',
+               )
+kconfig.Config('proj.%s.hdl.lib.%s.or1knd.i5.div_latency' % (project, hdllibrary),
+               prompt = '"Divide Latency (cycles)"',
+               type = 'int',
+               default = '"16"',
+               )
+
+SConscript('#hdl/cpu/l1mem/HDLLibraryKconfig.scons',
+           exports = {'env'     : env,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variantdir = 'l1mem',
+           duplicate = 0,
+           )
+
+kconfig.Config('proj.%s.hdl.lib.%s.or1knd.i5.l1mem.data.cache.write_alloc' % (project, hdllibrary),
+               prompt = '"L1 Data Cache Write Allocate" if !proj.%s.hdl.lib.%s.l1mem.data.impl.pass' % (project, hdllibrary),
+               default = 'n',
+               )
+kconfig.Config('proj.%s.hdl.lib.%s.or1knd.i5.l1mem.data.cache.write_back' % (project, hdllibrary),
+               prompt = '"L1 Data Cache Write-back by Default" if !proj.%s.hdl.lib.%s.l1mem.data.impl.pass' % (project, hdllibrary),
+               default = 'n',
+               )
+
+kconfig.configdict['proj.%s.hdl.lib.%s.l1mem.inst.cache.log2_assoc' % (project, hdllibrary)].allowed_values = xrange(8)
+kconfig.configdict['proj.%s.hdl.lib.%s.l1mem.inst.cache.index_bits' % (project, hdllibrary)].allowed_values = xrange(16)
+kconfig.configdict['proj.%s.hdl.lib.%s.l1mem.inst.cache.offset_bits' % (project, hdllibrary)].allowed_values = [2, 3]
+
+kconfig.configdict['proj.%s.hdl.lib.%s.l1mem.data.cache.log2_assoc' % (project, hdllibrary)].allowed_values = xrange(8)
+kconfig.configdict['proj.%s.hdl.lib.%s.l1mem.data.cache.index_bits' % (project, hdllibrary)].allowed_values = xrange(16)
+kconfig.configdict['proj.%s.hdl.lib.%s.l1mem.data.cache.offset_bits' % (project, hdllibrary)].allowed_values = [4, 5]
+
+SConscript('#hdl/cpu/or1knd/i5/mmu/HDLLibraryKconfig.scons',
+           exports = {'env'     : env,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variantdir = 'mmu',
+           duplicate = 0,
+           )
+
+SConscript('#hdl/cpu/bpb/HDLLibraryKconfig.scons',
+           exports = {'env'     : env,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variantdir = 'bpb',
+           duplicate = 0,
+           )
+
+SConscript('#hdl/cpu/btb/HDLLibraryKconfig.scons',
+           exports = {'env'     : env,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variantdir = 'btb',
+           duplicate = 0,
+           )

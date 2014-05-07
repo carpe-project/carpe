@@ -1,0 +1,60 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('project')
+Import('kconfig')
+Import('hdlprojenv')
+
+hdllibenv = hdlprojenv.HDLLibraryEnvironment('sim')
+
+hdllibenv.HDLAnalyze(source = ['options_pkg.vhdl'],
+                     provides = [VHDLPackage('options_pkg')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     syn = False,
+                     )
+
+
+hdllibenv.HDLAnalyze(source = ['monitor_pkg.vhdl'],
+                     provides = [VHDLPackage('monitor_pkg')],
+                     requires = [VHDLPackage('util.names_pkg'),
+                                 VHDLPackage('options_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     syn = False,
+                     )
+
+hdllibenv.HDLAnalyze(source = ['monitor_sync_watch.vhdl'],
+                     provides = [VHDLEntity('monitor_sync_watch')],
+                     requires = [],
+                     standard = 'vhdl00',
+                     syn = False,
+                     )
+hdllibenv.HDLAnalyze(source = ['monitor_sync_watch-behav.vhdl'],
+                     provides = [VHDLArchitecture('monitor_sync_watch(behav)')],
+                     requires = [VHDLPackage('monitor_pkg'),
+                                 VHDLPackage('options_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     syn = False,
+                     )
+
+hdllibenv.HDLAnalyze(source = ['mem_1rw.vhdl'],
+                     provides = [VHDLEntity('mem_1rw')],
+                     requires = [VHDLPackage('util.numeric_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     syn = False,
+                     )
+hdllibenv.HDLAnalyze(source = ['mem_1rw-behav.vhdl'],
+                     provides = [VHDLArchitecture('mem_1rw(behav)')],
+                     requires = [VHDLPackage('util.names_pkg'),
+                                 VHDLPackage('util.io_pkg'),
+                                 VHDLPackage('util.numeric_pkg'),
+                                 VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('options_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     syn = False,
+                     )

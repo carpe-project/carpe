@@ -1,0 +1,105 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+cpu_mmu_inst_impl = kconfig['proj.%s.hdl.lib.%s.mmu.inst.impl' % (project, hdllibrary)]
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_mmu_inst_pkg_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'use work.cpu_mmu_inst_@cpu_mmu_inst_impl@_pkg.all;',
+    '',
+    'package cpu_mmu_inst_pkg is',
+    ''
+    '  subtype cpu_mmu_inst_ctrl_in_type  is cpu_mmu_inst_@cpu_mmu_inst_impl@_ctrl_in_type;',
+    '  subtype cpu_mmu_inst_ctrl_out_type is cpu_mmu_inst_@cpu_mmu_inst_impl@_ctrl_out_type;',
+    '  subtype cpu_mmu_inst_dp_in_type  is cpu_mmu_inst_@cpu_mmu_inst_impl@_dp_in_type;',
+    '  subtype cpu_mmu_inst_dp_out_type is cpu_mmu_inst_@cpu_mmu_inst_impl@_dp_out_type;',
+    ''
+    'end package;',
+    '',
+    ]
+cpu_mmu_inst_pkg_subst_dict = dict()
+cpu_mmu_inst_pkg_subst_dict['@cpu_mmu_inst_impl@'] = cpu_mmu_inst_impl
+cpu_mmu_inst_pkg = \
+    textfile_env.Textfile(target     = 'cpu_mmu_inst_pkg.vhdl',
+                          source     = cpu_mmu_inst_pkg_source,
+                          SUBST_DICT = cpu_mmu_inst_pkg_subst_dict
+                          )
+
+cpu_mmu_inst_rtl_source = [
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'architecture rtl of cpu_mmu_inst is',
+    'begin',
+    '',
+    '  @cpu_mmu_inst_impl@ : entity work.cpu_mmu_inst_@cpu_mmu_inst_impl@(rtl)',
+    '    port map (',
+    '      clk                                   => clk,',
+    '      rstn                                  => rstn,',
+    '',
+    '      cpu_mmu_inst_@cpu_mmu_inst_impl@_ctrl_in   => cpu_mmu_inst_ctrl_in,',
+    '      cpu_mmu_inst_@cpu_mmu_inst_impl@_ctrl_out  => cpu_mmu_inst_ctrl_out,',
+    '      cpu_mmu_inst_@cpu_mmu_inst_impl@_dp_in     => cpu_mmu_inst_dp_in,',
+    '      cpu_mmu_inst_@cpu_mmu_inst_impl@_dp_out    => cpu_mmu_inst_dp_out',
+    '      );',
+    '',
+    'end;',
+    '',
+    ]
+cpu_mmu_inst_rtl_subst_dict = dict()
+cpu_mmu_inst_rtl_subst_dict['@cpu_mmu_inst_impl@'] = cpu_mmu_inst_impl
+cpu_mmu_inst_rtl = \
+    textfile_env.Textfile(target     = 'cpu_mmu_inst-rtl.vhdl',
+                          source     = cpu_mmu_inst_rtl_source,
+                          SUBST_DICT = cpu_mmu_inst_rtl_subst_dict
+                          )
+
+hdllibenv.HDLAnalyze(source = 'cpu_mmu_inst_types_pkg.vhdl',
+                     provides = [VHDLPackage('cpu_mmu_inst_types_pkg'),
+                                 ],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = cpu_mmu_inst_pkg,
+                     provides = [VHDLPackage('cpu_mmu_inst_pkg'),
+                                 ],
+                     requires = [VHDLPackage('cpu_types_pkg'),
+                                 VHDLPackage('cpu_mmu_inst_%s_pkg' % cpu_mmu_inst_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_mmu_inst.vhdl'],
+                     provides = [VHDLEntity('cpu_mmu_inst'),
+                                 ],
+                     requires = [VHDLPackage('sys.sys_pkg'),
+                                 VHDLPackage('cpu_mmu_inst_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = cpu_mmu_inst_rtl,
+                     provides = [VHDLArchitecture('cpu_mmu_inst(rtl)'),
+                                 ],
+                     requires = [VHDLArchitecture('cpu_mmu_inst_%s(rtl)' % cpu_mmu_inst_impl),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+SConscript('#hdl/cpu/mmu/inst/%s/HDLLibraryImport.scons' % cpu_mmu_inst_impl,
+           exports = {'hdllibenv' : hdllibenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': hdllibrary,
+                      },
+           variant_dir = cpu_mmu_inst_impl,
+           duplicate = 0,
+           )

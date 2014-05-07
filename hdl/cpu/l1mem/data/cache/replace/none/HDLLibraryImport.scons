@@ -1,0 +1,32 @@
+# -*- python -*-
+
+from SConsHDL import *
+
+Import('hdllibenv')
+Import('kconfig')
+Import('project')
+Import('hdllibrary')
+
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_data_cache_replace_none_pkg.vhdl'],
+                     provides = [VHDLPackage('cpu_l1mem_data_cache_replace_none_pkg'),
+                                 ],
+                     requires = [VHDLPackage('util.types_pkg'),
+                                 VHDLPackage('cpu_l1mem_data_cache_config_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_data_cache_replace_none.vhdl'],
+                     provides = [VHDLEntity('cpu_l1mem_data_cache_replace_none'),
+                                 ],
+                     requires = [VHDLPackage('cpu_l1mem_data_cache_replace_none_pkg'),
+                                 ],
+                     standard = 'vhdl00',
+                     )
+hdllibenv.HDLAnalyze(source = ['cpu_l1mem_data_cache_replace_none-rtl.vhdl'],
+                     provides = [VHDLArchitecture('cpu_l1mem_data_cache_replace_none(rtl)'),
+                                 ],
+                     requires = [],
+                     standard = 'vhdl00',
+                     )
+

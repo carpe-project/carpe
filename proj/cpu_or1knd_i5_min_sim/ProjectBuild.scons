@@ -1,0 +1,124 @@
+# -*- python -*-
+
+from SConsHDL import *
+import SCons.Util
+import SCons.Errors
+
+import re
+
+Import('env')
+Import('project')
+Import('kconfig')
+
+hdlprojenv = HDLProjectEnvironment(env = env,
+                                   project = 'cpu_or1knd_i5_min_sim',
+                                   builddir = 'hdlout',
+                                   kconfig = kconfig,
+                                   )
+
+for lib in ['tech', 'util', 'isa', 'sim', 'sys', 'mem']:
+    SConscript('#hdl/%s/HDLProjectImport.scons' % lib,
+               exports = {'hdlprojenv' : hdlprojenv,
+                          'project'    : project,
+                          'kconfig'    : kconfig,
+                          },
+               variant_dir = Dir('hdl').Dir(lib),
+               duplicate = 0,
+               )
+
+cpu_or1knd_i5_libenv = hdlprojenv.HDLLibraryEnvironment('cpu_or1knd_i5')
+SConscript('#hdl/cpu/or1knd/i5/HDLLibraryImport.scons',
+           exports = {'hdllibenv' : cpu_or1knd_i5_libenv,
+                      'kconfig'   : kconfig,
+                      'project'   : project,
+                      'hdllibrary': 'cpu_or1knd_i5',
+                      },
+           variant_dir = 'hdl/cpu/or1knd/i5',
+           duplicate = 0,
+           )
+
+cpu_or1knd_i5_min_sim_libenv = hdlprojenv.HDLLibraryEnvironment('cpu_or1knd_i5_min_sim')
+
+textfile_env = Environment(tools = ['textfile'])
+cpu_or1knd_i5_min_sim_config_pkg_source = []
+cpu_or1knd_i5_min_sim_config_pkg_source.extend([
+    '-- AUTOMATICALLY GENERATED, DO NOT MODIFY --',
+    '',
+    'library ieee;',
+    'use ieee.std_logic_1164.all;',
+    '',
+    'package cpu_or1knd_i5_min_sim_config_pkg is',
+    '',
+    '  constant cpu_or1knd_i5_min_sim_mem_latency : natural := @cpu_or1knd_i5_min_sim_mem_latency@;',
+    '',
+    'end package;',
+    ])
+cpu_or1knd_i5_min_sim_config_pkg_subst_dict = dict()
+cpu_or1knd_i5_min_sim_config_pkg_subst_dict['@cpu_or1knd_i5_min_sim_mem_latency@'] = \
+    kconfig['proj.cpu_or1knd_i5_min_sim.hdl.cpu_or1knd_i5_min_sim.mem_latency']
+cpu_or1knd_i5_min_sim_config_pkg = \
+    textfile_env.Textfile(target = 'hdl/cpu_or1knd_i5_min_sim/cpu_or1knd_i5_min_sim_config_pkg.vhdl',
+                          source = cpu_or1knd_i5_min_sim_config_pkg_source,
+                          SUBST_DICT = cpu_or1knd_i5_min_sim_config_pkg_subst_dict,
+                          )
+
+cpu_or1knd_i5_min_sim_libenv.HDLAnalyze(source = cpu_or1knd_i5_min_sim_config_pkg,
+                                        provides = [VHDLPackage('cpu_or1knd_i5_min_sim_config_pkg')
+                                                    ],
+                                        requires = [],
+                                        standard = 'vhdl00',
+                                        syn = False,
+                                        )
+cpu_or1knd_i5_min_sim_libenv.HDLAnalyze(source = ['hdl/cpu_or1knd_i5_min_sim/cpu_or1knd_i5_min_sim_top.vhdl'],
+                                        provides = [VHDLEntity('cpu_or1knd_i5_min_sim_top')],
+                                        requires = [VHDLPackage('cpu_or1knd_i5_min_sim_config_pkg'),
+                                                    ],
+                                        standard = 'vhdl00',
+                                        syn = False,
+                                        )
+cpu_or1knd_i5_min_sim_libenv.HDLAnalyze(source = ['hdl/cpu_or1knd_i5_min_sim/cpu_or1knd_i5_min_sim_top-behav.vhdl'],
+                                        provides = [VHDLArchitecture('cpu_or1knd_i5_min_sim_top(behav)')],
+                                        requires = [VHDLPackage('util.types_pkg'),
+                                                    VHDLPackage('util.io_pkg'),
+                                                    VHDLPackage('util.logic_pkg'),
+                                                    VHDLPackage('util.names_pkg'),
+                                                    VHDLPackage('util.numeric_pkg'),
+                                                    VHDLPackage('isa.or1k_pkg'),
+                                                    VHDLPackage('cpu_or1knd_i5.cpu_or1knd_i5_pkg'),
+                                                    VHDLPackage('cpu_or1knd_i5_min_sim_config_pkg'),
+                                                    VHDLPackage('sim.options_pkg'),
+                                                    VHDLPackage('sim.monitor_pkg'),
+                                                    VHDLArchitecture('cpu_or1knd_i5.cpu_or1knd_i5_core(rtl)'),
+                                                    VHDLArchitecture('sim.mem_1rw(behav)'),
+                                                    VHDLArchitecture('sim.monitor_sync_watch(behav)'),
+                                                    VHDLArchitecture('tech.decoder(rtl)'),
+                                                    ],
+                                        standard = 'vhdl00',
+                                        syn = False,
+                                        )
+
+# hdlprojenv.HDLSynElaborate(hdlunit = VHDLArchitecture('cpu_or1knd_i5.cpu_or1knd_i5_core(rtl)'),
+#                            clock = 'clk')
+
+if hdlprojenv.sim_tool is not None:
+
+    hdlprojenv.HDLSimElaborate(hdlunit = VHDLArchitecture('cpu_or1knd_i5_min_sim.cpu_or1knd_i5_min_sim_top(behav)'))
+
+    sim_command = \
+        hdlprojenv.HDLSimCommand(target = 'cpu_or1knd_i5_min_sim-exec',
+                                 hdlunit = VHDLArchitecture('cpu_or1knd_i5_min_sim.cpu_or1knd_i5_min_sim_top(behav)'),
+                                 )[0]
+
+    Default(sim_command)
+
+    sim_wrapper_subst_dict = dict()
+    sim_wrapper_subst_dict['@sim_tool@'] = repr(hdlprojenv.sim_tool.name)
+    sim_wrapper_subst_dict['@sim_command@'] = repr(sim_command.abspath)
+    sim_wrapper = \
+        textfile_env.Textfile(target = File('cpu_or1knd_i5_min_sim'),
+                              source = File('cpu_or1knd_i5_min_sim.in'),
+                              SUBST_DICT = sim_wrapper_subst_dict
+                              )
+    SCons.Script.AddPostAction(sim_wrapper, SCons.Script.Chmod('$TARGET', 0o755))
+
+    Default(sim_wrapper)
