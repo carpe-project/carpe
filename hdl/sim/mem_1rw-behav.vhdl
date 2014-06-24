@@ -247,7 +247,7 @@ architecture behav of mem_1rw is
       if v_be = '1' then
         v_bus_tmp(v_size_n*byte_bits-byte_bits*v_bus_off-1 downto v_size_n*byte_bits-byte_bits*(v_bus_off+1)) := v_byte;
       else
-        v_bus_tmp(byte_bits*v_bus_off-1 downto byte_bits*(v_bus_off+1)) := v_byte;
+        v_bus_tmp(byte_bits*(v_bus_off+1)-1 downto byte_bits*v_bus_off) := v_byte;
       end if;
 
       v_bus_off := v_bus_off + 1;
@@ -283,7 +283,7 @@ architecture behav of mem_1rw is
       if v_be = '1' then
         v_byte := v_bus(v_size_n*byte_bits-byte_bits*v_bus_off-1 downto v_size_n*byte_bits-byte_bits*(v_bus_off+1));
       else
-        v_byte := v_bus(byte_bits*v_bus_off-1 downto byte_bits*(v_bus_off+1));
+        v_byte := v_bus(byte_bits*(v_bus_off+1)-1 downto byte_bits*v_bus_off);
       end if;
 
       memory.write_byte(v_byte_addr, v_byte);
