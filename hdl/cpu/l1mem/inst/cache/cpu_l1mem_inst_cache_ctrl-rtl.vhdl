@@ -406,7 +406,8 @@ begin
     );
   with r.b_bus_op_state select
     c.b_bus_op_fill_fetch_data_ready <= c.b_bus_op_cycle_complete when bus_op_state_fill_first,
-                                        sys_slave_ctrl_out.ready  when bus_op_state_fill,
+                                        sys_slave_ctrl_out.ready  when bus_op_state_fill |
+                                                                       bus_op_state_fill_last,
                                         'X'                       when others;
   c.b_bus_op_fill_complete <= (
     r.b_bus_op_state(bus_op_state_index_fill_last)
