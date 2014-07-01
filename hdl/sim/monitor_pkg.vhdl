@@ -182,9 +182,8 @@ package body monitor_pkg is
         
         new_entry_queue_capacity := initial_entry_queue_capacity;
         --report "new entry_queue capacity: " & integer'image(new_entry_queue_capacity);
-        entry_queue := new monitor_event_queue_entry_array_type(0 to new_entry_queue_capacity-1);
-        entry_queue.all := (
-          others => (
+        entry_queue := new monitor_event_queue_entry_array_type'(
+          0 to new_entry_queue_capacity-1 => (
             timestamp => time'high,
             source => monitor_event_source_id_type'high,
             data_length => natural'high
@@ -347,7 +346,7 @@ package body monitor_pkg is
         return;
       end if;
 
-      for n in 0 to data'length-1 loop
+      for n in 0 to data'high loop
         data_queue.all(data_queue_tail_index) := data(n);
         if data_queue_tail_index /= data_queue.all'length-1 then
           data_queue_tail_index := data_queue_tail_index + 1;
@@ -446,9 +445,9 @@ package body monitor_pkg is
 
     variable event_queue : monitor_event_queue_type;
     
-    impure function event_source(instance : string;
-                                 code : monitor_event_code_type;
-                                 name : string) return monitor_event_source_id_type is
+    impure function event_source(instance : in string;
+                                 code : in monitor_event_code_type;
+                                 name : in string) return monitor_event_source_id_type is
       variable ret : natural;
     begin
       
