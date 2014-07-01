@@ -28,9 +28,16 @@ def Kconfig(kconfig, env):
 def InitActions(projenv):
 
     toplibdir = projenv.sim_tooldir.Dir('lib').abspath
+    workdir = os.path.join(toplibdir, 'work')
     libraries = projenv.libraries
+    ghdl_a_sh = projenv.sim_tooldir.File('ghdl-a.sh').abspath
+    ghdl_e_sh = projenv.sim_tooldir.File('ghdl-e.sh').abspath
 
     def GHDLInit(target, source, env):
+
+        print toplibdir
+        print workdir
+        print libraries
 
         if not os.path.isdir(toplibdir):
             os.mkdir(toplibdir)
@@ -40,6 +47,40 @@ def InitActions(projenv):
             libdir = os.path.join(toplibdir, lib)
             if not os.path.isdir(libdir):
                 os.mkdir(libdir)
+
+        ghdl_a_sh_source = list()
+        ghdl_a_sh_source.append('#!/bin/sh')
+        ghdl_a_command = projenv.kconfig.get('hdl.sim.ghdl.ghdl', 'ghdl')
+        ghdl_a_command += ' -a'
+        ghdl_a_opts = projenv.kconfig.get('hdl.sim.ghdl.analyze_opts', '')
+        if ghdl_a_opts:
+            ghdl_a_command += ' ' + ghdl_a_opts
+        ghdl_a_command += ''.join(' -P' + projenv.sim_tooldir.Dir('lib').Dir(l).abspath for l in projenv.libraries)
+        ghdl_a_command += ' ${1+"$@"}'
+        ghdl_a_sh_source.append(ghdl_a_command)
+        ghdl_a_sh_source.append('')
+
+        ghdl_a_sh_file = file(ghdl_a_sh, 'w')
+        ghdl_a_sh_file.writelines('\n'.join(ghdl_a_sh_source))
+        ghdl_a_sh_file.close()
+        os.chmod(ghdl_a_sh, 0o755)
+
+        ghdl_e_sh_source = list()
+        ghdl_e_sh_source.append('#!/bin/sh')
+        ghdl_e_command = projenv.kconfig.get('hdl.sim.ghdl.ghdl', 'ghdl')
+        ghdl_e_command += ' -e'
+        ghdl_e_opts = projenv.kconfig.get('hdl.sim.ghdl.elaborate_opts', '')
+        if ghdl_e_opts:
+            ghdl_e_command += ' ' + ghdl_e_opts
+        ghdl_e_command += ''.join(' -P' + projenv.sim_tooldir.Dir('lib').Dir(l).abspath for l in projenv.libraries)
+        ghdl_e_command += ' ${1+"$@"}'
+        ghdl_e_sh_source.append(ghdl_e_command)
+        ghdl_e_sh_source.append('')
+
+        ghdl_e_sh_file = file(ghdl_e_sh, 'w')
+        ghdl_e_sh_file.writelines('\n'.join(ghdl_e_sh_source))
+        ghdl_e_sh_file.close()
+        os.chmod(ghdl_e_sh, 0o755)
 
     return [SCons.Script.Action(GHDLInit, 'GHDLInit()')]
 
@@ -51,19 +92,15 @@ def AnalyzeActions(projenv, source, language, standard, library):
     ret = list()
 
     env = SCons.Script.Environment(tools = [])
-    env['GHDL']    = projenv.kconfig.get('hdl.sim.ghdl.ghdl', 'ghdl')
-    env['LIBS']    = projenv.libraries
+    env['GHDLA']   = projenv.sim_tooldir.File('ghdl-a.sh')
+    env['GHDLDIR'] = projenv.sim_tooldir
     env['WORK']    = library
-    env['LIBDIR']  = projenv.sim_tooldir.Dir('lib')
     env['WORKDIR'] = projenv.sim_tooldir.Dir('lib').Dir(library)
 
-    env['OPTS'] = list()
-    if projenv.kconfig.has_key('hdl.sim.ghdl.analyze_opts'):
-        env['OPTS'].append(projenv.kconfig.get('hdl.sim.ghdl.analyze_opts'))
-    env['OPTS'].append('${_concat(\'-P\', LIBS, \'\', __env__, lambda libs: [LIBDIR.Dir(l) for l in libs])}')
     env['HDLSOURCE'] = source
+    env['relpath'] = os.path.relpath
 
-    ret.append(env.Action('$GHDL -a $OPTS --work=$WORK --workdir=$WORKDIR ${[s.path for s in HDLSOURCE]}'))
+    ret.append(env.Action('$GHDLA.abspath --work=$WORK --workdir=$WORKDIR.abspath ${[s.path for s in HDLSOURCE]}'))
     
     return ret
 
@@ -74,10 +111,8 @@ def ElaborateActions(projenv, hdlunit):
     bindir = projenv.sim_tooldir.Dir('bin')
 
     env = SCons.Script.Environment(tools = [])
-    env['GHDL']         = projenv.kconfig.get('hdl.sim.ghdl.ghdl', 'ghdl')
-    env['LIBS']         = projenv.libraries
+    env['GHDLE']        = projenv.sim_tooldir.File('ghdl-e.sh')
     env['WORK']         = hdlunit.library
-    env['LIBDIR']       = projenv.sim_tooldir.Dir('lib')
     env['WORKDIR']      = projenv.sim_tooldir.Dir('lib').Dir(hdlunit.library)
     env['SIM']      = bindir.File('%s-%s' % (hdlunit.library, hdlunit.filename()))
 
@@ -90,14 +125,8 @@ def ElaborateActions(projenv, hdlunit):
         raise SCons.Errors.UserError('invalid HDL unit: ' % str(hdlunit))
 
     env['TOP']          = top
-
-    env['OPTS'] = list()
-    if projenv.kconfig.has_key('hdl.sim.ghdl.elaborate_opts'):
-        env['OPTS'].append(projenv.kconfig.get('hdl.sim.ghdl.elaborate_opts'))
-    env['OPTS'].append('${_concat(\'-P\', LIBS, \'\', __env__, lambda libs: [LIBDIR.Dir(l) for l in libs])}')
-
     ret.append(SCons.Script.Mkdir(bindir))
-    ret.append(env.Action('$GHDL -e $OPTS --work=$WORK --workdir=$WORKDIR -o "$SIM.path" $TOP'))
+    ret.append(env.Action('$GHDLE.abspath --work=$WORK --workdir=$WORKDIR.abspath -o "$SIM.path" $TOP'))
     
     return ret
 
