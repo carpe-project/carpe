@@ -115,9 +115,11 @@ options[':cpu_or1knd_i5_min_sim_top:core:pipe:dp::m_inst:monitor'] = 'true'
 
 monitor_thread_run = True
 
+exit_code = 255
+
 def monitor_thread_func():
 
-    exit_code = 255
+    global exit_code
 
     monitor_fifo_fd = os.open(monitor_fifo_filename, os.O_RDONLY | os.O_NONBLOCK)
 
@@ -205,7 +207,7 @@ def monitor_thread_func():
                 elif m.group('code') == 'exit':
                     print 'r3 value: {}'.format(r3_str)
                     try:
-                        exit_code = int('0x{}'.format(r3_str))
+                        exit_code = int(r3_str, 16)
                     except:
                         exit_code = 255
 
@@ -213,12 +215,9 @@ def monitor_thread_func():
         os.close(monitor_fifo_fd)
         sys.stderr.write('last committed instruction: {}\n'.format(lastcommit))
 
-    return exit_code
-
 commit_trace_file = None
 monitor_output_file = None
 
-exit_code = 255
 try:
 
     if exec_format == 'srec':
@@ -307,7 +306,7 @@ try:
             raise Exception('unknown simulator: ' + sim_tool)
     finally:
         monitor_thread_run = False
-        exit_code = monitor_thread.join()
+        monitor_thread.join()
 
 finally:
     if commit_trace_file is not None:
