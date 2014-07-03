@@ -32,6 +32,9 @@ def InitActions(projenv):
     libraries = projenv.libraries
     ghdl_a_sh = projenv.sim_tooldir.File('ghdl-a.sh').abspath
     ghdl_e_sh = projenv.sim_tooldir.File('ghdl-e.sh').abspath
+    ghdl_command = projenv.kconfig['hdl.sim.ghdl.ghdl']
+    ghdl_analyze_opts = projenv.kconfig['hdl.sim.ghdl.analyze_opts']
+    ghdl_elaborate_opts = projenv.kconfig['hdl.sim.ghdl.elaborate_opts']
 
     def GHDLInit(target, source, env):
 
@@ -50,12 +53,12 @@ def InitActions(projenv):
 
         ghdl_a_sh_source = list()
         ghdl_a_sh_source.append('#!/bin/sh')
-        ghdl_a_command = projenv.kconfig.get('hdl.sim.ghdl.ghdl', 'ghdl')
+        ghdl_a_command = ghdl_command
         ghdl_a_command += ' -a'
-        ghdl_a_opts = projenv.kconfig.get('hdl.sim.ghdl.analyze_opts', '')
+        ghdl_a_opts = ghdl_analyze_opts
         if ghdl_a_opts:
             ghdl_a_command += ' ' + ghdl_a_opts
-        ghdl_a_command += ''.join(' -P' + projenv.sim_tooldir.Dir('lib').Dir(l).abspath for l in projenv.libraries)
+        ghdl_a_command += ''.join(' -P' + os.path.join(toplibdir, l) for l in libraries)
         ghdl_a_command += ' ${1+"$@"}'
         ghdl_a_sh_source.append(ghdl_a_command)
         ghdl_a_sh_source.append('')
@@ -67,12 +70,12 @@ def InitActions(projenv):
 
         ghdl_e_sh_source = list()
         ghdl_e_sh_source.append('#!/bin/sh')
-        ghdl_e_command = projenv.kconfig.get('hdl.sim.ghdl.ghdl', 'ghdl')
+        ghdl_e_command = ghdl_command
         ghdl_e_command += ' -e'
-        ghdl_e_opts = projenv.kconfig.get('hdl.sim.ghdl.elaborate_opts', '')
+        ghdl_e_opts = ghdl_elaborate_opts
         if ghdl_e_opts:
             ghdl_e_command += ' ' + ghdl_e_opts
-        ghdl_e_command += ''.join(' -P' + projenv.sim_tooldir.Dir('lib').Dir(l).abspath for l in projenv.libraries)
+        ghdl_e_command += ''.join(' -P' + os.path.join(toplibdir, l) for l in libraries)
         ghdl_e_command += ' ${1+"$@"}'
         ghdl_e_sh_source.append(ghdl_e_command)
         ghdl_e_sh_source.append('')
