@@ -1,0 +1,250 @@
+#
+# Automatically generated file; DO NOT EDIT.
+# CARPE Configuration
+#
+config=""
+
+#
+# HDL Options
+#
+
+#
+# Simulation Options
+#
+hdl.sim.tool.ghdl=y
+# hdl.sim.tool.vcs is not set
+hdl.sim.tool="ghdl"
+
+#
+# GHDL Options
+#
+hdl.sim.ghdl.ghdl="ghdl"
+hdl.sim.ghdl.analyze_opts="--std=00"
+hdl.sim.ghdl.elaborate_opts="--std=00"
+
+#
+# Synthesis Options
+#
+proj.cpu_or1knd_i5_min_sim=y
+
+#
+# cpu_or1knd_i5_min_sim Project Options
+#
+proj.cpu_or1knd_i5_min_sim.hdl.lib.tech.impl.inferred=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.tech.impl="inferred"
+
+#
+# Inferred Component Configuration
+#
+proj.cpu_or1knd_i5_min_sim.hdl.lib.tech.inferred.sim_only_models=y
+
+#
+# System Configuration
+#
+proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.paddr_bits=36
+proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.log2_bus_bytes.2=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.log2_bus_bytes.3 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.log2_bus_bytes.4 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.log2_bus_bytes.5 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.log2_bus_bytes=2
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.log2_max_burst_cycles.0 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.log2_max_burst_cycles.1 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.log2_max_burst_cycles.2=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.log2_max_burst_cycles.3 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.log2_max_burst_cycles.4 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.sys.log2_max_burst_cycles=2
+
+#
+# OR1KND 5-stage Pipeline Configuration
+#
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.or1knd.i5.madd_enable is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.or1knd.i5.mul_enable=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.or1knd.i5.madd_latency=4
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.or1knd.i5.mul_latency=3
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.or1knd.i5.div_latency=16
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.impl.pass is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.impl.cache=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.impl="cache"
+
+#
+# L1 Instruction Cache Configuration
+#
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.0 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.1 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.2 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.3 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.4 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.5 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.6 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.7=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.8 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.9 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.10 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.11 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.12 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.13 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.14 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits.15 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.index_bits=7
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.offset_bits.2=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.offset_bits.3 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.offset_bits=2
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.log2_assoc.0 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.log2_assoc.1 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.log2_assoc.2=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.log2_assoc.3 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.log2_assoc.4 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.log2_assoc.5 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.log2_assoc=2
+
+#
+# Replacement Algorithm Options
+#
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.replace.impl.lru=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.inst.cache.replace.impl="lru"
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.impl.pass is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.impl.cache=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.impl="cache"
+
+#
+# L1 Data Cache Configuration
+#
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.0 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.1 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.2 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.3 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.4 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.5 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.6 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.7=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.8 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.9 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.10 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.11 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.12 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.13 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.14 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits.15 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.index_bits=7
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.offset_bits.4=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.offset_bits.5 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.offset_bits=4
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.log2_assoc.0 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.log2_assoc.1 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.log2_assoc.2=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.log2_assoc.3 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.log2_assoc.4 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.log2_assoc.5 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.log2_assoc=2
+
+#
+# Replacement Algorithm Options
+#
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.replace.impl.lru=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.replace.impl="lru"
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.1=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.2 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.3 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.4 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.5 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.6 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.7 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.8 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.9 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.10 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.11 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.12 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.13 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.14 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.15 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries.16 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.l1mem.data.cache.stb_entries=1
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.or1knd.i5.l1mem.data.cache.write_alloc=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.or1knd.i5.l1mem.data.cache.write_back=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.mmu.inst.impl.pass=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.mmu.inst.impl="pass"
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.mmu.data.impl.pass=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.mmu.data.impl="pass"
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.impl.nt is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.impl.bimod=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.impl="bimod"
+
+#
+# Bimodal BPB Configuration
+#
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.0 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.1 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.2 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.3 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.4 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.5 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.6 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.7=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.8 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.9 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.10 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.11 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.12 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.13 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.14 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.15 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.16 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.17 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.18 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.19 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits.20 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.index_bits=7
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.counter_bits.1 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.counter_bits.2=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.counter_bits.3 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.counter_bits.4 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.bpb.bimod.counter_bits=2
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.impl.miss is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.impl.cache=y
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.impl="cache"
+
+#
+# Target Cache BTB Configuration
+#
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.0 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.1 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.2 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.3 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.4 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.5 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.6 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.7=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.8 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.9 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.10 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.11 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.12 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.13 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.14 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.15 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.16 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.17 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.18 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.19 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits.20 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.index_bits=7
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.log2_assoc.0 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.log2_assoc.1=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.log2_assoc.2 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.log2_assoc.3 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.log2_assoc.4 is not set
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.log2_assoc.5 is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.log2_assoc=1
+
+#
+# Replacement Algorithm Options
+#
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.replace.impl.lru=y
+# proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.replace.impl.lfsr is not set
+proj.cpu_or1knd_i5_min_sim.hdl.lib.cpu_or1knd_i5.btb.cache.replace.impl="lru"
+
+#
+# Testbench Configuration
+#
+proj.cpu_or1knd_i5_min_sim.hdl.cpu_or1knd_i5_min_sim.mem_latency=16
+proj="cpu_or1knd_i5_min_sim"
